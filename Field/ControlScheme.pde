@@ -14,6 +14,14 @@ public class ControlScheme{
         this.rotateCCWKey = 0;
         this.rotateCWKey = 0;
     }
+    public ControlScheme(int upKey, int downKey, int leftKey, int rightKey, int rotateCCWKey, int rotateCWKey){
+        this.upKey = 0;
+        this.downKey = 0;
+        this.leftKey = 0;
+        this.rightKey = 0;
+        this.rotateCCWKey = 0;
+        this.rotateCWKey = 0;
+    }
     
     public boolean isUpPressed(){
         
