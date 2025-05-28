@@ -17,7 +17,7 @@ public class Module{
       accel = new PVector(0, 0);
     }
 
-    public void update(float angularAccel, PVector accel, float dt){
+    public void update(PVector accel, float angularAccel float dt){
       // NOTE: dt should be in seconds (eg. 0.02 secs)
       // Verlet Integration: https://en.wikipedia.org/wiki/Verlet_integration
       this.angularAccel = angularAccel;

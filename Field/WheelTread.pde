@@ -12,7 +12,7 @@ public class WheelTread {
         this.pointModifier = pointModifier;
     }
 
-    public float getTraction(){
+    public float getTractionCoefficient(){
         return traction;
     }
     public float getPointModifier(){
