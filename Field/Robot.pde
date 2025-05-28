@@ -7,6 +7,7 @@ public class Robot{
     private float currentAngularVelocity;
     private SwerveDrive swerveDrive;
     private ControlScheme controlScheme;
+    private boolean climbing;
 
     public Robot(){
         this.team = "";
@@ -19,7 +20,7 @@ public class Robot{
         this.controlScheme = new ControlScheme();
     }
 
-    public Robot(String team, float mass, float centerOfGravity, float centerOfGravity, WheelTread wheelTread, PVector currentVelocity, float currentAngularVelocity, SwerveDrive swerveDrive, ControlScheme controlScheme){
+    public Robot(String team, float mass, float centerOfGravity, WheelTread wheelTread, PVector currentVelocity, float currentAngularVelocity, SwerveDrive swerveDrive, ControlScheme controlScheme){
         this.team = team;
         this.mass = mass;
         this.centerOfGravity = centerOfGravity;
@@ -42,6 +43,19 @@ public class Robot{
     public void updateScoreBoard(){
 
     }
+
+    public PVecotr getPosition(){
+
+    }
+
+    public void getGamePieces(){
+
+    }
+
+    public void setClimbing(boolean b){
+        
+    }
+
     public void draw(){
         
     }
