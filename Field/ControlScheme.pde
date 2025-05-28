@@ -26,7 +26,7 @@ public class ControlScheme{
     public boolean isUpPressed(){
         if (keyPressed){
             if(key == upKey){
-
+                return true;
             }
         }
     }
@@ -34,7 +34,7 @@ public class ControlScheme{
     public boolean isDownPressed(){
         if (keyPressed){
             if(key == downKey){
-
+                return true;
             }
         }
     }
@@ -42,7 +42,7 @@ public class ControlScheme{
     public boolean isLeftPressed(){
         if (keyPressed){
             if(key == leftKey){
-
+                return true;
             }
         }
     }
@@ -50,7 +50,7 @@ public class ControlScheme{
     public boolean isRightPressed(){
         if (keyPressed){
             if(key == rightKey){
-
+                return true;
             }
         }
     }
@@ -58,7 +58,7 @@ public class ControlScheme{
     public boolean isRotateCCWPressed(){
         if (keyPressed){
             if(key == rotateCCWKey){
-
+                return true;
             }
         }
     }
@@ -66,7 +66,7 @@ public class ControlScheme{
     public boolean isRotateCWPressed(){
         if (keyPressed){
             if(key == rotateCWKey){
-
+                return true;
             }
         }
     }
