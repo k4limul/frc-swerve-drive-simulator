@@ -24,6 +24,10 @@ public class Zone{
                 robot.getGamePieces();
             } else if (name.equals("stage")) {
                 robot.setClimbing(true);
+            } else if (name.equals("subwoofer")){
+                if(robot.hasGamePiece()) {
+                    robot.subwooferShot();
+                }
             }
         } else {
             if (name.equals("stage")) {

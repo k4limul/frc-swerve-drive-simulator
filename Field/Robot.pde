@@ -8,6 +8,7 @@ public class Robot{
     private SwerveDrive swerveDrive;
     private ControlScheme controlScheme;
     private boolean climbing;
+    private boolean gamePiece;
 
     public Robot(){
         this.team = "";
@@ -53,6 +54,14 @@ public class Robot{
     }
 
     public void setClimbing(boolean b){
+        
+    }
+
+    public boolean hasGamePiece(){
+        return gamePiece;
+    }
+
+    public void subwooferShot(){
         
     }
 
