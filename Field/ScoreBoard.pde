@@ -3,23 +3,32 @@ public class ScoreBoard {
     private int blueScore = 0;
     private String redName = "Red";
     private String blueName = "Blue";
-    privater Timer timer = new timer();
+    private Timer timer = new timer();
 
     public ScoreBoard(String redName, String blueName) {
         this.redName = redName;
         this.blueName = blueName;
     }
+
     public void addPoints(String team, int points){
-        if(team.equals("RED")){
+        if (team.equals(redName)) {
             redScore += points;
-        }
-        else if(team.equals("BLUE")){
+        } else if(team.equals(blueName)) {
             blueScore += points;
-        }
-        else{
+        } else{
             throw new IllegalArguementException("Team Does not Exist");
         }
     }
+
+    public int getRedScore() {
+        return redScore;
+    }
+
+    public int getBlueScore() {
+        return blueScore;
+    }
+
+    // unfinished
     public void update();
     public void displayScoreBoard();
 }
