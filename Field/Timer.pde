@@ -3,33 +3,58 @@ public class Timer {
     private int teleop;
     private int time;
     private int wait;
-    private boolean tick = false;
     private boolean isAutoFinished;
     private boolean isTeleopFinished;
+    private boolean isMatchStarted;
 
-    public Timer(){
-        auto = 15;
-        teleop = 135;
+    public Timer() {
+        auto = 15;  
+        teleop = 135;  
+        isAutoFinished = false;
+        isTeleopFinished = false;
+        isMatchStarted = false;
     }
 
-    void setup(){
-        int time = millis();
-        int wait = 1000;
+    public void start() {
+        if (!isMatchStarted) {
+            time = millis();
+            wait = 1000;  
+            isMatchStarted = true;
+        }
     }
 
-    void draw() {
-        if(millis() - time >= wait) time = millis();
-        if((auto - time / wait) <= 0) isAutoFinished = true;
-        if(((teleop + auto) - time / wait) <= 0) isTeleopFinished = true;
+    public void update() {
+        if (!isMatchStarted) return;
+        int currentTime = (millis() - time) / wait;
+        if (!isAutoFinished && currentTime >= auto) {
+            isAutoFinished = true;
+        }
+        if (!isTeleopFinished && currentTime >= (auto + teleop)) {
+            isTeleopFinished = true;
+        }
     }
 
-    public void isFinished() {
+    public boolean isFinished() {
         return isAutoFinished && isTeleopFinished;
     }
 
     public int getTimeLeft() {
+        if (!isMatchStarted) return auto + teleop;
         if (isFinished()) return 0;
-        else if (teleop > 0) return teleop;
-        else if (auto > 0) return auto + teleop;
+        int currentTime = (millis() - time) / wait;
+        if (currentTime < auto) {
+            return auto - currentTime;
+        } else if (currentTime < (auto + teleop)) {
+            return (auto + teleop) - currentTime;
+        }
+        return 0;
+    }
+
+    public boolean isAutonomous() {
+        return isMatchStarted && !isAutoFinished;
+    }
+
+    public boolean isTeleop() {
+        return isAutoFinished && !isTeleopFinished;
     }
 }
