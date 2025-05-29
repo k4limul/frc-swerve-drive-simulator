@@ -95,4 +95,8 @@ public class SwerveDrive{
     public float getAngularVelocity(){
         return robotAngularVelocity;
     }
+
+    public PVector getRobotPosition(){
+        return robotPosition;
+    }
 }

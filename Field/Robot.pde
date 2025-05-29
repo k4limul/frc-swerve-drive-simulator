@@ -9,6 +9,7 @@ public class Robot{
     private ControlScheme controlScheme;
     private boolean climbing;
     private boolean gamePiece;
+    private String zone;
 
     public Robot(){
         this.team = "";
@@ -33,28 +34,31 @@ public class Robot{
     }
 
     public void updateSwerveState(){
-
+        // if(ControlScheme.isUpPressed()) { SwerveDrive.updateModuleStates(new PVector(0,1), 0, 0.01 ); } // update with real values
     }
+
     public void moveRobot(){
-
-    }
-    public void updateZoneState(){
-
-    }
-    public void updateScoreBoard(){
-
+        
     }
 
-    public PVecotr getPosition(){
+    public void updateZoneState(String name){
+        zone = name;
+    }
+    
+    public void updateScoreBoard(int points){
+        ScoreBoard.addPoints(team, points);
+    }
 
+    public PVector getPosition(){
+        return swerveDrive.getPosition();
     }
 
     public void getGamePieces(){
-
+        gamePiece = true;
     }
 
-    public void setClimbing(boolean b){
-        
+    public void setClimbing(boolean climb){
+        climbing = climb;
     }
 
     public boolean hasGamePiece(){
@@ -62,7 +66,8 @@ public class Robot{
     }
 
     public void subwooferShot(){
-        
+        gamePiece = false;
+        updateScoreBoard(2);
     }
 
     public void draw(){
