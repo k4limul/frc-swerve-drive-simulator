@@ -4,23 +4,35 @@ public class Module{
     private PVector velocity;
     private PVector pos;
 
+    private float angularAccel;
+    private PVector accel;
+
     public Module(float angle, PVector pos){
       this.angle = angle;
-      this.angularVelocity = 0;
+      angularVelocity = 0;
       this.pos = pos;
-      this.velocity = new PVector(0, 0);
+      velocity = new PVector(0, 0);
+      
+      angularAccel = 0;
+      accel = new PVector(0, 0);
     }
 
-    public void update(float angularVelocity, PVector velocity, float dt){
-      // NOTE: dt should be in ms (eg. 50ms)
-      this.angularVelocity = angularVelocity;
-      this.velocity = velocity;
-      
+    public void update(PVector accel, float angularAccel float dt){
+      // NOTE: dt should be in seconds (eg. 0.02 secs)
+      // Verlet Integration: https://en.wikipedia.org/wiki/Verlet_integration
+      this.angularAccel = angularAccel;
+      this.accel = accel;
+
       // updating positions
-      angle = (angle + angularVelocity * dt) % 360;
+      pos.x += velocity.x * dt + 0.5 * accel.x * dt * dt;
+      pos.y += velocity.y * dt + 0.5 * accel.y * dt * dt;
+      angle = (angle + angularVelocity * dt + 0.5 * angularAccel * dt * dt) % 360;
       while (angle < 0) angle += 360;
-      pos.x += velocity.x * dt;
-      pos.y += velocity.y * dt;
+
+      // updating velocities
+      velocity.x += accel.x * dt;
+      velocity.y += accel.y * dt;
+      angularVelocity += angularAccel * dt;
     }
     
     public float getAngle() { // degrees
