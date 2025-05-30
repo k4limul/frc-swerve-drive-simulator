@@ -28,6 +28,8 @@ public class Zone{
                 if(robot.hasGamePiece()) {
                     robot.subwooferShot();
                 }
+            } else if (name.equals("amp")){
+                robot.ampScore();
             }
         } else {
             if (name.equals("stage")) {
