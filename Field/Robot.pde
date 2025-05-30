@@ -65,6 +65,11 @@ public class Robot{
         return gamePiece;
     }
 
+    public void ampScore(){
+        gamePiece = false;
+        updateScoreBoard(1);
+    }
+
     public void subwooferShot(){
         gamePiece = false;
         updateScoreBoard(2);
