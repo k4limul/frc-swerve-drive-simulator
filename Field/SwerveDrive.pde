@@ -1,33 +1,75 @@
-public class SwerveDrive{
-    private float gearRatio;
-    private WheelTread wheelTread;
-    private float mass;
-    private Module[] modules;
+public class SwerveDrive {
+    // Framerate -- constant
+    private static final float DT = 1.0 / 60.0;
 
+    // Swerve attributes
     private PVector robotPosition;
     private float robotAngle;
     private PVector robotVelocity;
     private float robotAngularVelocity;
+    private Module[] modules;
 
-    public SwerveDrive(float gearRatio, WheelTread wheelTread, float mass, Module[] modules, PVector startPos, float startAngle){
-        this.gearRatio = gearRatio;
-        this.wheelTread = wheelTread;
-        this.mass = mass;
-        this.modules = modules;
+    // States for more realistic motion
+    private PVector robotAcceleration;
+    private float robotAngularAcceleration;
+    private PVector previousVelocity;
+    private float previousAngularVelocity;
 
+    private WheelTread wheelTread;
+    private float mass;
+
+    public SwerveDrive(PVector startPos, float startAngle, Module[] modules, float mass, WheelTread wheelTread) {
         robotPosition = startPos;
         robotAngle = startAngle;
         robotVelocity = new PVector(0, 0);
         robotAngularVelocity = 0;
+
+        robotAcceleration = new PVector(0, 0);
+        robotAngularAcceleration = 0;
+        previousVelocity = new PVector(0, 0);
+        previousAngularVelocity = 0;
+
+        this.modules = modules;
+        this.mass = mass;
+        this.wheelTread = wheelTread;
     }
 
-    public void updateModuleStates(PVector accel, float angularAccel, float dt){
+    // Called every frame in main class to update the robot's states
+    public void update() {
+        previousVelocity = robotVelocity.copy();
+        previousAngularVelocity = robotAngularVelocity;
+        
         for (Module m : modules) {
-            PVector recalculatedAccel = recalculateLinearAccel(accel);
-            m.update(recalculatedAccel, angularAccel, dt);
+            m.update(DT);
         }
+        
+        robotAcceleration = PVector.sub(robotVelocity, previousVelocity).div(DT);
+        robotAngularAcceleration = (robotAngularVelocity - previousAngularVelocity) / DT;
+        
+        // Update position based on velocity
+        robotPosition.add(PVector.mult(robotVelocity, DT));
+        robotAngle += robotAngularVelocity * DT;
+    }
 
-        updateRobotState();
+    // Called with keyboard inputs
+    public void drive(float vx, float vy, float targetOmega) {
+        PVector linAccel = recalculateLinearAccel(PVector.sub(new PVector(vx, vy), robotVelocity).div(60));
+        PVector targetVelocity = PVector.add(linAccel.mult(DT), robotVelocity);
+        for (Module m : modules) {
+            calculateModuleVelocity(targetVelocity.x, targetVelocity.y, targetOmega, m.getPosition());
+            m.setTargetState(targetVelocity);
+        }
+    }
+
+    private PVector calculateModuleVelocity(float vx, float vy, float omega, PVector pos) {
+        // Module velocity = chassis translation + rotation effect
+        float omegaRad = radians(omega);
+
+        // omega × r (cross product) gives perpendicular velocity
+        float rotationalVx = -omegaRad * pos.y;
+        float rotationalVy = omegaRad * pos.x;
+        
+        return new PVector(vx + rotationalVx, vy + rotationalVy);
     }
 
     private PVector recalculateLinearAccel(PVector targetAccel) {
@@ -67,32 +109,47 @@ public class SwerveDrive{
         return output;
     }
 
-    private void updateRobotState(){
-        PVector avgVelocity = new PVector(0, 0);
-        PVector avgPosition = new PVector(0, 0);
-        float avgAngle = 0;
+    // GETTERS
+    public PVector getRobotPosition() { return robotPosition.copy(); }
+    public float getRobotAngle() { return robotAngle; }
+    public PVector getRobotVelocity() { return robotVelocity.copy(); }
+    public float getRobotAngularVelocity() { return robotAngularVelocity; }
+
+    // Draw robot and modules on canvas!
+    public void draw() {
+        float s = 8;
+        float t = 4;
+
+        pushMatrix();
+        translate(robotPosition.x, robotPosition.y); // move coordinate system to center of robot
+        rotate(radians(robotAngle)); // rotate coordinate system by angle of robot
+        fill(255, 0, 0);
+        stroke(0);
+        strokeWeight(1);
+        
+        // draw square representing robot center
+        beginShape();
+        vertex(-s, s);
+        vertex(s, s);
+        vertex(s, -s);
+        vertex(-s, -s);
+        endShape(CLOSE);
+        
+        fill(0, 255, 0);
+        stroke(0);
+        strokeWeight(1);
+        
+        // draw triangle representing robot direction
+        beginShape();
+        vertex(t, 0);
+        vertex(-t/2, t/2);
+        vertex(-t/2, -t/2);
+        endShape(CLOSE);
+
+        popMatrix();
 
         for (Module m : modules) {
-            avgVelocity.add(m.getVelocity());
-            avgPosition.add(m.getPosition());
-            avgAngle += m.getAngle();
+            m.draw(robotPosition, robotAngle, s, t);
         }
-
-        avgVelocity.div(modules.length);
-        avgPosition.div(modules.length);
-        avgAngle /= modules.length;
-
-        robotVelocity = avgVelocity;
-        robotPosition = avgPosition;
-        robotAngle = avgAngle;
-        // need to figure out how to implement angular velocity update
-    }
-
-    public PVector getVelocity(){
-        return robotVelocity;
-    }
-
-    public float getAngularVelocity(){
-        return robotAngularVelocity;
     }
 }
