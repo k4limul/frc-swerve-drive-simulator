@@ -1,5 +1,4 @@
 public class Module {
-
   // Fixed position -- module's position relative to robot center
   private PVector posFromCenter;
 
@@ -37,18 +36,24 @@ public class Module {
     this.targetSpeed = calculatedSpeed;
   }
 
-  // Called every frame to update module state
+  // Called every frame to update module state -- rate limit lin/ang velocities
   public void update(float dt) {
-    currentSpeed = targetSpeed;
+    // Velocity limit
+    currentSpeed = constrain(targetSpeed, -maxDriveSpeed, maxDriveSpeed);
     
-    float angleDiff = angle - currentAngle;
-    if (angleDiff > 180) angleDiff -= 360;
+    // Angular Velocity limit
+    float angleDiff = angle - currentAngle; // how much to add to currentAngle at the end of update step
+
+    if (angleDiff > 180) angleDiff -= 360; // difference has to be within bounds
     if (angleDiff < -180) angleDiff += 360;
 
+    // Limiting step
+    float maxAngleDiff = maxTurnSpeed * dt;
+    angleDiff = constrain(angleDiff, -maxAngleDiff, maxAngleDiff);
+
+    // Normalize new, calculated angle to be within expected range (-180, 180)
     currentAngle = (currentAngle + angleDiff) % 360;
     while (currentAngle < 0) currentAngle += 360;
-
-    angularVelocity = angleDiff / dt;
   }
 
   // Calculate how much the robot moves because of the module

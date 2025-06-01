@@ -12,8 +12,6 @@ public class SwerveDrive {
     // States for more realistic motion
     private PVector robotAcceleration;
     private float robotAngularAcceleration;
-    private PVector previousVelocity;
-    private float previousAngularVelocity;
 
     private WheelTread wheelTread;
     private float mass;
@@ -26,8 +24,6 @@ public class SwerveDrive {
 
         robotAcceleration = new PVector(0, 0);
         robotAngularAcceleration = 0;
-        previousVelocity = new PVector(0, 0);
-        previousAngularVelocity = 0;
 
         this.modules = modules;
         this.mass = mass;
@@ -36,40 +32,68 @@ public class SwerveDrive {
 
     // Called every frame in main class to update the robot's states
     public void update() {
-        previousVelocity = robotVelocity.copy();
-        previousAngularVelocity = robotAngularVelocity;
-        
         for (Module m : modules) {
             m.update(DT);
         }
-        
-        robotAcceleration = PVector.sub(robotVelocity, previousVelocity).div(DT);
-        robotAngularAcceleration = (robotAngularVelocity - previousAngularVelocity) / DT;
-        
-        // Update position based on velocity
-        robotPosition.add(PVector.mult(robotVelocity, DT));
-        robotAngle += robotAngularVelocity * DT;
+        updateRobotPose();
     }
 
     // Called with keyboard inputs
-    public void drive(float vx, float vy, float targetOmega) {
-        PVector linAccel = recalculateLinearAccel(PVector.sub(new PVector(vx, vy), robotVelocity).div(60));
-        PVector targetVelocity = PVector.add(linAccel.mult(DT), robotVelocity);
+    public void drive(float vx, float vy, float omega) {
         for (Module m : modules) {
-            calculateModuleVelocity(targetVelocity.x, targetVelocity.y, targetOmega, m.getPosition());
-            m.setTargetState(targetVelocity);
+            PVector moduleVel = calculateModuleVelocity(vx, vy, omega, m.getPosition());
+            m.setTargetState(moduleVel);
         }
     }
 
-    private PVector calculateModuleVelocity(float vx, float vy, float omega, PVector pos) {
-        // Module velocity = chassis translation + rotation effect
-        float omegaRad = radians(omega);
+    /*
+     * Since the user will pass in field relative velocities, we need to convert vx, vy, and omega
+     * to robot relative velocities for the module to follow!
+     * 
+     * This is simply done by taking the vector and multiplying it by the rotation matrix.
+     * If you've learned about DeMoivre's Theorem and rotating points in the complex plane,
+     * it is good to know that this rotation matrix is derived from the expansion of cos(x) + isin(x)
+     */
+    private PVector calculateModuleVelocity(float vx_field, float vy_field, float omega, PVector pos) {
+        // Convert from field coordinates to robot coordinates
+        float theta = -1 * radians(robotAngle); // -1 for CW (CCW is +1)
+        float vx_robot = vx_field * cos(theta) - vy_field * sin(theta);
+        float vy_robot = vx_field * sin(theta) - vy_field * cos(theta);
 
-        // omega × r (cross product) gives perpendicular velocity
+        // Cross product of omega and R (radius, or distance from center)
+        // This gives us the perpendicular, velocity (v = wR) at the module's position
+        float omegaRad = radians(omega);
         float rotationalVx = -omegaRad * pos.y;
         float rotationalVy = omegaRad * pos.x;
         
-        return new PVector(vx + rotationalVx, vy + rotationalVy);
+        // Recall that wheel velocity must = Translation + Rotation effect
+        return new PVector(vx_robot + rotationalVx, vy_robot + rotationalVy);
+    }
+
+    private void updateRobotPose() {
+        PVector totalVel = new PVector(0, 0);
+        float totalOmega = 0;
+
+        for (Module m : modules) {
+            PVector mVel = m.getVelocityContribution();
+            totalVel.add(mVel);
+
+            PVector pos = m.getPosition();
+            float rotationContribution = (mVel.x * pos.y - mVel.y * pos.x) / pos.magSq(); // stolen from online
+            totalOmega += rotationContribution;
+        }
+
+        // Average the module velocities
+        robotVelocity = PVector.div(totalVel, 4);
+        robotAngularVelocity = totalOmega / 4;
+
+        // Update robot position and angle
+        robotPosition.add(PVector.mult(robotVelocity, DT));
+        robotAngle += robotAngularVelocity * DT;
+        
+        // Normalize robot angle within bounds
+        robotAngle = robotAngle % 360;
+        if (robotAngle < 0) robotAngle += 360;
     }
 
     private PVector recalculateLinearAccel(PVector targetAccel) {
