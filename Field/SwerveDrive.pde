@@ -152,4 +152,8 @@ public class SwerveDrive {
             m.draw(robotPosition, robotAngle, s, t);
         }
     }
+
+    public PVector getRobotPosition(){
+        return robotPosition;
+    }
 }

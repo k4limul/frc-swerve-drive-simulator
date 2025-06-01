@@ -7,6 +7,9 @@ public class Robot{
     private float currentAngularVelocity;
     private SwerveDrive swerveDrive;
     private ControlScheme controlScheme;
+    private boolean climbing;
+    private boolean gamePiece;
+    private String zone;
 
     public Robot(){
         this.team = "";
@@ -19,7 +22,7 @@ public class Robot{
         this.controlScheme = new ControlScheme();
     }
 
-    public Robot(String team, float mass, float centerOfGravity, float centerOfGravity, WheelTread wheelTread, PVector currentVelocity, float currentAngularVelocity, SwerveDrive swerveDrive, ControlScheme controlScheme){
+    public Robot(String team, float mass, float centerOfGravity, WheelTread wheelTread, PVector currentVelocity, float currentAngularVelocity, SwerveDrive swerveDrive, ControlScheme controlScheme){
         this.team = team;
         this.mass = mass;
         this.centerOfGravity = centerOfGravity;
@@ -31,17 +34,47 @@ public class Robot{
     }
 
     public void updateSwerveState(){
-
+        // if(ControlScheme.isUpPressed()) { SwerveDrive.updateModuleStates(new PVector(0,1), 0, 0.01 ); } // update with real values
     }
+
     public void moveRobot(){
-
+        
     }
-    public void updateZoneState(){
 
+    public void updateZoneState(String name){
+        zone = name;
     }
-    public void updateScoreBoard(){
+    
+    public void updateScoreBoard(int points){
+        ScoreBoard.addPoints(team, points);
+    }
 
+    public PVector getPosition(){
+        return swerveDrive.getPosition();
     }
+
+    public void getGamePieces(){
+        gamePiece = true;
+    }
+
+    public void setClimbing(boolean climb){
+        climbing = climb;
+    }
+
+    public boolean hasGamePiece(){
+        return gamePiece;
+    }
+
+    public void ampScore(){
+        gamePiece = false;
+        updateScoreBoard(1);
+    }
+
+    public void subwooferShot(){
+        gamePiece = false;
+        updateScoreBoard(2);
+    }
+
     public void draw(){
         
     }

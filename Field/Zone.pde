@@ -5,18 +5,44 @@ public class Zone{
     private int points;
 
     public Zone(String n, PVector pos, float w, float h, int p){
-
+        name = n;
+        position = pos;
+        width = w;
+        height = h;
+        points = p;
     }
 
     public boolean checkRobotInside(Robot robot){
-
+        PVector robotPos = robot.getPosition();
+        return (robotPos.x > position.x - width/2 && robotPos.x < position.x + width/2 
+                && robotPos.y > position.y - height/2 && robotPos.y < position.y + height/2);
     }
 
     public void applyEffect(Robot robot){
-
+        if(checkRobotInside(robot)) {
+            if (name.equals("source")) {
+                robot.getGamePieces();
+            } else if (name.equals("stage")) {
+                robot.setClimbing(true);
+            } else if (name.equals("subwoofer")){
+                if(robot.hasGamePiece()) {
+                    robot.subwooferShot();
+                }
+            } else if (name.equals("amp")){
+                robot.ampScore();
+            }
+        } else {
+            if (name.equals("stage")) {
+                robot.setClimbing(false);
+            }
+        }
     }
 
     public void draw(){
-        
+        fill(100);
+        stroke(100);
+        strokeWeight(2);
+        rectMode(CENTER);
+        rect(position.x, position.y, width, height);
     }
 }
