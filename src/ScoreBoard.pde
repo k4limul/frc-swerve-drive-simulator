@@ -4,15 +4,11 @@ public class ScoreBoard {
     private String redName = "Red";
     private String blueName = "Blue";
     private Timer timer;
-    private int boardWidth = 200;
-    private int boardHeight = 100;
-    private int x, y;
+    private int boardWidth = 20;
 
-    public ScoreBoard(String redName, String blueName, int x, int y) {
+    public ScoreBoard(String redName, String blueName) {
         this.redName = redName;
         this.blueName = blueName;
-        this.x = x;
-        this.y = y;
         this.timer = new Timer();
     }
 
@@ -43,10 +39,16 @@ public class ScoreBoard {
     public void update() {
         timer.update();
     }
+    
+    public Timer getTimer() {
+        return timer;
+    }
 
     public void displayScoreBoard() {
         fill(200);
-        rect(x, y, boardWidth, boardHeight);
+        int x = 300;
+        int y = 0;
+        rect(x, y, boardWidth, boardWidth);
 
         fill(255, 0, 0);
         text(redName + ": " + redScore, x + 10, y + 30);

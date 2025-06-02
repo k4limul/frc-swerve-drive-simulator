@@ -1,14 +1,15 @@
 public class Robot{
     private String team;
-    private float mass;
+    private int mass;
     private WheelTread wheelTread;
     private SwerveDrive swerveDrive;
     private ControlScheme controlScheme;
+    private ScoreBoard scoreBoard;
     private boolean climbing;
     private boolean gamePiece;
     private String zone;
 
-    public Robot(String team, float mass, WheelTread wheelTread, SwerveDrive swerveDrive, PVector startPos, float startAngle, ControlScheme controlScheme, ScoreBoard scoreBoard) {
+    public Robot(String team, int mass, WheelTread wheelTread, PVector startPos, float startAngle, ControlScheme controlScheme, ScoreBoard scoreBoard) {
         this.team = team;
         this.mass = mass;
         this.wheelTread = wheelTread;
@@ -17,7 +18,6 @@ public class Robot{
 
         this.climbing = false;
         this.gamePiece = true; // starts with a gamepiece
-        this.currentZone = "";
 
         Module[] modules = new Module[4];
         modules[0] = new Module(new PVector(15, 15), 200, 360);   // Front Right
@@ -41,7 +41,7 @@ public class Robot{
     }
     
     public void updateScoreBoard(int points){
-        ScoreBoard.addPoints(team, points);
+        scoreBoard.addPoints(team, points);
     }
 
     public PVector getPosition() {

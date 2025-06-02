@@ -1,21 +1,21 @@
-public class WheelTread {
-    private float traction;
-    private float pointModifier;
+public static class WheelTread {
 
-    public WheelTread(){
-        this.traction = 0;
-        this.pointModifier = 0;
-    }
+  public static final WheelTread SPIKY = new WheelTread(0.8, 1.2);
+  public static final WheelTread SMOOTH = new WheelTread(0.6, 1.0);
+  
+  private final float traction;
+  private final float pointModifier;
 
-    public WheelTread(float traction, float pointModifier){
-        this.traction = traction;
-        this.pointModifier = pointModifier;
-    }
+  private WheelTread(float traction, float pointModifier) {
+    this.traction = traction;
+    this.pointModifier = pointModifier;
+  }
 
-    public float getTractionCoefficient(){
-        return traction;
-    }
-    public float getPointModifier(){
-        return pointModifier;
-    }
+  public float getTractionCoefficient() {
+    return traction;
+  }
+
+  public float getPointModifier() {
+    return pointModifier;
+  }
 }

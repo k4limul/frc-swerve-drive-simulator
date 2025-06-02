@@ -58,7 +58,7 @@ public class SwerveDrive {
         // Convert from field coordinates to robot coordinates
         float theta = -1 * radians(robotAngle); // -1 for CW (CCW is +1)
         float vx_robot = vx_field * cos(theta) - vy_field * sin(theta);
-        float vy_robot = vx_field * sin(theta) - vy_field * cos(theta);
+        float vy_robot = vx_field * sin(theta) + vy_field * cos(theta);
 
         // Cross product of omega and R (radius, or distance from center)
         // This gives us the perpendicular, velocity (v = wR) at the module's position
@@ -141,14 +141,14 @@ public class SwerveDrive {
 
     // Draw robot and modules on canvas!
     public void draw() {
-        float s = 8;
-        float t = 4;
+        float s = 20;
+        float t = 10;
 
         pushMatrix();
         translate(robotPosition.x, robotPosition.y); // move coordinate system to center of robot
         rotate(radians(robotAngle)); // rotate coordinate system by angle of robot
-        fill(255, 0, 0);
-        stroke(0);
+        noFill();
+        stroke(255, 0, 0);
         strokeWeight(1);
         
         // draw square representing robot center

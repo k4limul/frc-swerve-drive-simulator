@@ -3,9 +3,9 @@ public class Module {
   private PVector posFromCenter;
 
   // Module states -- what we control
-  private float targetAngle;
-  private float targetSpeed;
-  private float targetAngularVelocity;
+  private float angle;
+  private float speed;
+  private float angularVelocity;
 
   // Current states -- used for updating states every frame 
   private float currentAngle;
@@ -32,14 +32,14 @@ public class Module {
     float calculatedAngle = degrees(atan2(targetVelocity.y, targetVelocity.x)); // point in the direction of the desiredVelocity
     float calculatedSpeed = targetVelocity.mag(); // speed is a scalar quantity
 
-    this.targetAngle = calculatedAngle;
-    this.targetSpeed = calculatedSpeed;
+    this.angle = calculatedAngle;
+    this.speed = calculatedSpeed;
   }
 
   // Called every frame to update module state -- rate limit lin/ang velocities
   public void update(float dt) {
     // Velocity limit
-    currentSpeed = constrain(targetSpeed, -maxDriveSpeed, maxDriveSpeed);
+    currentSpeed = constrain(speed, -maxDriveSpeed, maxDriveSpeed);
     
     // Angular Velocity limit
     float angleDiff = angle - currentAngle; // how much to add to currentAngle at the end of update step
@@ -66,8 +66,8 @@ public class Module {
   public PVector getPosition() { return posFromCenter; }
   public float getCurrentAngle() { return currentAngle; }
   public float getCurrentSpeed() { return currentSpeed; }
-  public float getTargetAngle() { return targetAngle; }
-  public float getTargetSpeed() { return targetSpeed; }
+  public float getTargetAngle() { return angle; }
+  public float getTargetSpeed() { return speed; }
   public float getAngularVelocity() { return angularVelocity; }
   
   // Visualize this module on the processing canvas
@@ -76,17 +76,18 @@ public class Module {
       translate(robotCenter.x, robotCenter.y); // move coordinate system to center of module
       rotate(radians(robotAngle)); // rotate coordinate system by angle of module
       translate(posFromCenter.x, posFromCenter.y);
+      rotate(radians(currentAngle));
 
-      fill(255, 0, 0);
-      stroke(0);
-      strokeWeight(1);
+      noFill();
+      stroke(255, 0, 0);
+      strokeWeight(2);
       
       // draw square representing module
       beginShape();
-      vertex(-s, s);
-      vertex(s, s);
-      vertex(s, -s);
-      vertex(-s, -s);
+      vertex(-s/2, s/2);
+      vertex(s/2, s/2);
+      vertex(s/2, -s/2);
+      vertex(-s/2, -s/2);
       endShape(CLOSE);
       
       fill(0, 255, 0);

@@ -13,10 +13,10 @@ public class ControlScheme{
     public PVector getTranslationInput() {
         float vx = 0, vy = 0;
         if (keyPressed) {
-            if (key == upKey || keyCode == UP) vy += 100;
-            if (key == downKey || keyCode == DOWN) vy -= 100;
-            if (key == leftKey || keyCode == LEFT) vy -= 100;
-            if (key == rightKey || keyCode == RIGHT) vy += 100;
+            if (key == upKey || keyCode == UP) vy -= 100;
+            if (key == downKey || keyCode == DOWN) vy += 100;
+            if (key == leftKey || keyCode == LEFT) vx -= 100;
+            if (key == rightKey || keyCode == RIGHT) vx += 100;
         }
         return new PVector(vx, vy);
     }
@@ -30,4 +30,3 @@ public class ControlScheme{
         return omega;
     }
 }
-
