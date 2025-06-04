@@ -57,6 +57,9 @@ public class Field {
         if (!gameStarted) {
             drawInstructions();
         }
+        if (scoreBoard.isFinished){
+            background(51);
+        }
     }
 
     public void updateZoneState(Robot r) {
