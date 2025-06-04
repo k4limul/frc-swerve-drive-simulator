@@ -59,7 +59,7 @@ public class Field {
         if (!gameStarted) {
             drawInstructions();
         }
-        if (scoreBoard.timer.isFinished){
+        if (scoreBoard.timer.isFinished()){
             background(51);
         }
     }
