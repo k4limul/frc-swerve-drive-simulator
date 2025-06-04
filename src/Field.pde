@@ -29,10 +29,10 @@ public class Field {
         robots.add(blue);
 
         zones.clear();
-        zones.add(new Zone("source", new PVector(50,500), 20, 50, 0));
-        zones.add(new Zone("stage", new PVector(150,150), 50, 50, 3));
-        zones.add(new Zone("subwoofer", new PVector(200,100), 40, 50, 2));
-        zones.add(new Zone("amp", new PVector(550,100), 40, 60, 1));
+        zones.add(new Zone("source", new PVector(750,550), 100, 100, 0));
+        zones.add(new Zone("stage", new PVector(230,301), 80, 80, 3));
+        zones.add(new Zone("subwoofer", new PVector(85,195), 80, 80, 2));
+        zones.add(new Zone("amp", new PVector(100,40), 80, 80, 1));
     }
 
     public void update() {
@@ -49,6 +49,8 @@ public class Field {
         image(fieldImage, 0, 0, width, height);
         for (Zone z : zones) {
             z.draw();
+            z.applyEffect(robots.get(0));
+            z.applyEffect(robots.get(1));
         }
         for (Robot r : robots) {
             r.draw();
@@ -57,7 +59,7 @@ public class Field {
         if (!gameStarted) {
             drawInstructions();
         }
-        if (scoreBoard.isFinished){
+        if (scoreBoard.timer.isFinished){
             background(51);
         }
     }
@@ -76,6 +78,7 @@ public class Field {
 
     public void endGame() {
         gameStarted = false;
+
     }
 
     private void drawInstructions() {
