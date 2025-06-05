@@ -46,20 +46,11 @@ public class SwerveDrive {
         }
     }
 
-    /*
-     * Since the user will pass in field relative velocities, we need to convert vx, vy, and omega
-     * to robot relative velocities for the module to follow!
-     * 
-     * This is simply done by taking the vector and multiplying it by the rotation matrix.
-     * If you've learned about DeMoivre's Theorem and rotating points in the complex plane,
-     * it is good to know that this rotation matrix is derived from the expansion of cos(x) + isin(x)
-     */
+    /* 
+     * This takes the translational velocity from the user, and it 
+     * calculates the rotational velocity by taking the change in
+    */
     private PVector calculateModuleVelocity(float vx_field, float vy_field, float omega, PVector pos) {
-        // Convert from field coordinates to robot coordinates
-        float theta = -1 * radians(robotAngle); // -1 for CW (CCW is +1)
-        float vx_robot = vx_field * cos(theta) - vy_field * sin(theta);
-        float vy_robot = vx_field * sin(theta) + vy_field * cos(theta);
-
         // Cross product of omega and R (radius, or distance from center)
         // This gives us the perpendicular, velocity (v = wR) at the module's position
         float omegaRad = radians(omega);
@@ -67,7 +58,7 @@ public class SwerveDrive {
         float rotationalVy = omegaRad * pos.x;
         
         // Recall that wheel velocity must = Translation + Rotation effect
-        return new PVector(vx_robot + rotationalVx, vy_robot + rotationalVy);
+        return new PVector(vx_field + rotationalVx, vy_field + rotationalVy);
     }
 
     private void updateRobotPose() {

@@ -30,7 +30,7 @@ public class Robot{
 
     public void updateSwerveState() {
         PVector translation = controlScheme.getTranslationInput(300);
-        float rotation = controlScheme.getRotationInput(90);
+        float rotation = controlScheme.getRotationInput(180);
 
         swerveDrive.drive(translation.x, translation.y, rotation);
         swerveDrive.update();
