@@ -79,13 +79,14 @@ public class SwerveDrive {
             totalVel.add(mVel);
 
             PVector pos = m.getPosition();
+            
             float rotationContribution = (mVel.x * pos.y - mVel.y * pos.x) / pos.magSq(); // stolen from online
             totalOmega += rotationContribution;
         }
 
         // Average the module velocities
         robotVelocity = PVector.div(totalVel, 4);
-        robotAngularVelocity = totalOmega / 4;
+        robotAngularVelocity = degrees(totalOmega / 4);
 
         // Update robot position and angle
         robotPosition.add(PVector.mult(robotVelocity, DT));
@@ -159,8 +160,8 @@ public class SwerveDrive {
         vertex(-s, -s);
         endShape(CLOSE);
         
-        fill(0, 255, 0);
-        stroke(0);
+        noFill();
+        stroke(0, 255, 0);
         strokeWeight(1);
         
         // draw triangle representing robot direction

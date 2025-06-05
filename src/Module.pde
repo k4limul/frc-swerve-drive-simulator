@@ -15,6 +15,8 @@ public class Module {
   private float maxDriveSpeed;
   private float maxTurnSpeed;
 
+  private boolean shouldReverse;
+
   public Module(PVector posFromCenter, float maxDriveSpeed, float maxTurnSpeed){
     this.posFromCenter = posFromCenter;
     this.maxDriveSpeed = maxDriveSpeed;
@@ -29,11 +31,11 @@ public class Module {
 
   // Called by the user when they want to change the target states
   public void setTargetState(PVector targetVelocity) {
-    float calculatedAngle = degrees(atan2(targetVelocity.y, targetVelocity.x)); // point in the direction of the desiredVelocity
+    float calculatedAngle = degrees(atan2(targetVelocity.y, targetVelocity.x)); // point in the direction of the targetVelocity
     float calculatedSpeed = targetVelocity.mag(); // speed is a scalar quantity
 
-    this.angle = calculatedAngle;
-    this.speed = calculatedSpeed;
+    this.angle = optimizeAngle(calculatedAngle);
+    this.speed = shouldReverse ? -calculatedSpeed : calculatedSpeed;
   }
 
   // Called every frame to update module state -- rate limit lin/ang velocities
@@ -45,15 +47,37 @@ public class Module {
     float angleDiff = angle - currentAngle; // how much to add to currentAngle at the end of update step
 
     if (angleDiff > 180) angleDiff -= 360; // difference has to be within bounds
-    if (angleDiff < -180) angleDiff += 360;
+    if (angleDiff < -180) angleDiff += 360; // bounds: (-180, 180)
 
     // Limiting step
     float maxAngleDiff = maxTurnSpeed * dt;
     angleDiff = constrain(angleDiff, -maxAngleDiff, maxAngleDiff);
 
-    // Normalize new, calculated angle to be within expected range (-180, 180)
-    currentAngle = (currentAngle + angleDiff) % 360;
-    while (currentAngle < 0) currentAngle += 360;
+    // Normalize new, calculated angle to (0, 360)
+    currentAngle = (((currentAngle + angleDiff) % 360) + 360) % 360;
+  }
+
+  public float optimizeAngle(float targetAngle) {
+    float current = ((currentAngle % 360) + 360) % 360;
+    float target = ((targetAngle % 360) + 360) % 360;
+
+    float diff = target - current;
+
+    // Keep mag of diff less than 180 deg
+    while (diff > 180) diff -= 360;
+    while (diff < -180) diff += 360;
+    
+    // Find the other way to get to the target angle
+    float reverseDiff = diff > 0 ? diff - 180 : diff + 180;
+    
+    // Compare both paths and choose the one that requires least turning
+    if (Math.abs(reverseDiff) < Math.abs(diff)) {
+      shouldReverse = true;
+      return current + reverseDiff;
+    } else {
+      shouldReverse = false;
+      return current + diff;
+    }
   }
 
   // Calculate how much the robot moves because of the module
@@ -90,8 +114,8 @@ public class Module {
       vertex(-s/2, -s/2);
       endShape(CLOSE);
       
-      fill(0, 255, 0);
-      stroke(0);
+      noFill();
+      stroke(0, 255, 0);
       strokeWeight(1);
       
       // draw triangle representing module direction

@@ -12,5 +12,9 @@ void draw() {
 }
 
 void keyPressed() {
-    gameField.handleKeyPressed();
+    gameField.handleKeyPressed(key, keyCode);
+}
+
+void keyReleased() {
+    gameField.handleKeyReleased(key, keyCode);
 }

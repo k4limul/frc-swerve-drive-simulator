@@ -96,12 +96,22 @@ public class Field {
         text("Press SPACE to start the match!", width/2, height/2 + 160);
     }
     
-    public void handleKeyPressed() {
+    public void handleKeyPressed(char key, int keyCode) {
       if (key == ' ' && !gameStarted && !scoreBoard.getTimer().isFinished()) {
           startGame();
       } else if (key == 'r' || key == 'R') {
           reset();
       }
+
+      for (Robot r : robots) {
+        r.getControlScheme().keyPressed(key, keyCode);
+      }
+    }
+
+    public void handleKeyReleased(char key, int keyCode) {
+        for (Robot r : robots) {
+            r.getControlScheme().keyReleased(key, keyCode);
+        }
     }
 
     public void reset() {

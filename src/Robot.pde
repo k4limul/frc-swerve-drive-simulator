@@ -20,17 +20,17 @@ public class Robot{
         this.gamePiece = true; // starts with a gamepiece
 
         Module[] modules = new Module[4];
-        modules[0] = new Module(new PVector(15, 15), 200, 360);   // Front Right
-        modules[1] = new Module(new PVector(-15, 15), 200, 360);  // Front Left  
-        modules[2] = new Module(new PVector(-15, -15), 200, 360); // Back Left
-        modules[3] = new Module(new PVector(15, -15), 200, 360);  // Back Right
+        modules[0] = new Module(new PVector(15, 15), 2000, 360);   // Front Right
+        modules[1] = new Module(new PVector(-15, 15), 2000, 360);  // Front Left  
+        modules[2] = new Module(new PVector(-15, -15), 2000, 360); // Back Left
+        modules[3] = new Module(new PVector(15, -15), 2000, 360);  // Back Right
         
         this.swerveDrive = new SwerveDrive(startPos, startAngle, modules, mass, wheelTread);
     }
 
     public void updateSwerveState() {
-        PVector translation = controlScheme.getTranslationInput();
-        float rotation = controlScheme.getRotationInput();
+        PVector translation = controlScheme.getTranslationInput(300);
+        float rotation = controlScheme.getRotationInput(90);
 
         swerveDrive.drive(translation.x, translation.y, rotation);
         swerveDrive.update();
@@ -46,6 +46,10 @@ public class Robot{
 
     public PVector getPosition() {
         return swerveDrive.getRobotPosition();
+    }
+    
+    public ControlScheme getControlScheme() {
+        return controlScheme;
     }
     
     public void acquireGamePiece(){
