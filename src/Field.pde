@@ -27,7 +27,7 @@ public class Field {
         ControlScheme p2controls = new ControlScheme('i', 'k', 'j', 'l', 'u', 'o');
  
         Robot blue = new Robot("Blue", 150, WheelTread.SPIKY, new PVector(100, 400), 0, p1controls, scoreBoard);
-        Robot red = new Robot("Red", 150, WheelTread.SPIKY, new PVector(500, 400), 180, p2controls, scoreBoard);
+        Robot red = new Robot("Red", 150, WheelTread.SPIKY, new PVector(700, 400), 180, p2controls, scoreBoard);
         robots.clear();
         robots.add(red);
         robots.add(blue);
@@ -37,6 +37,11 @@ public class Field {
         zones.add(new Zone("stage", new PVector(230,301), 80, 80, 3));
         zones.add(new Zone("subwoofer", new PVector(85,195), 80, 80, 2));
         zones.add(new Zone("amp", new PVector(100,40), 80, 80, 1));
+        
+        zones.add(new Zone("source", new PVector(50,550), 100, 100, 0));
+        zones.add(new Zone("stage", new PVector(570,301), 80, 80, 3));
+        zones.add(new Zone("subwoofer", new PVector(715,195), 80, 80, 2));
+        zones.add(new Zone("amp", new PVector(700,40), 80, 80, 1));
     }
 
     public void update() {
@@ -87,7 +92,9 @@ public class Field {
 
     private void drawInstructions() {
         fill(0, 0, 0, 150);
-        rect(width/2, height/2, width/2, height/2+50);
+        rectMode(CENTER);
+        rect(width/2, height/2, width/2+120, height/2+50);
+        rectMode(CORNER);
         
         fill(255);
         textAlign(CENTER);

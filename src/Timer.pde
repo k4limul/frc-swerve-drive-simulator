@@ -8,8 +8,8 @@ public class Timer {
     private boolean isMatchStarted;
 
     public Timer() {
-        auto = 5;  
-        teleop = 5;  
+        auto = 10;  
+        teleop = 30;  
         isAutoFinished = false;
         isTeleopFinished = false;
         isMatchStarted = false;

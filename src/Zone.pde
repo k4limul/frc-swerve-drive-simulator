@@ -43,10 +43,5 @@ public class Zone{
     }
     
     public void draw(){
-        fill(255);
-        stroke(100);
-        strokeWeight(2);
-        rectMode(CENTER);
-        rect(position.x, position.y, width, height);
     }
 }
