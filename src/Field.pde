@@ -14,6 +14,10 @@ public class Field {
         setup();
     }
 
+    public ScoreBoard getScoreBoard(){
+        return this.scoreBoard;
+    }
+
     public void loadFieldImage(String imagePath) {
         fieldImage = loadImage(imagePath);
     }
