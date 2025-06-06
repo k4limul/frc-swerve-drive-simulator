@@ -21,7 +21,7 @@ public class Zone{
     public void applyEffect(Robot robot){
         if(checkRobotInside(robot)) {
             if (name.equals("source")) {
-                robot.getGamePieces();
+                robot.acquireGamePiece();
             } else if (name.equals("stage")) {
                 robot.setClimbing(true);
             } else if (name.equals("subwoofer")){
@@ -38,11 +38,10 @@ public class Zone{
         }
     }
 
+    public String getName() {
+      return name;
+    }
+    
     public void draw(){
-        fill(100);
-        stroke(100);
-        strokeWeight(2);
-        rectMode(CENTER);
-        rect(position.x, position.y, width, height);
     }
 }
