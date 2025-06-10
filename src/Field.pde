@@ -26,8 +26,8 @@ public class Field {
         ControlScheme p1controls = new ControlScheme('w', 's', 'a', 'd', 'q', 'e');
         ControlScheme p2controls = new ControlScheme('i', 'k', 'j', 'l', 'u', 'o');
  
-        Robot blue = new Robot("Blue", 150, WheelTread.SPIKY, new PVector(100, 400), 0, p1controls, scoreBoard);
-        Robot red = new Robot("Red", 150, WheelTread.SPIKY, new PVector(700, 400), 180, p2controls, scoreBoard);
+        Robot blue = new Robot("Blue", 40, WheelTread.SPIKY, new PVector(100, 400), 0, p1controls, scoreBoard);
+        Robot red = new Robot("Red", 150, WheelTread.SMOOTH, new PVector(700, 400), 180, p2controls, scoreBoard);
         robots.clear();
         robots.add(red);
         robots.add(blue);

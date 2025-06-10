@@ -11,8 +11,8 @@ public class SwerveDrive {
     private Module[] modules;
 
     // States for more realistic motion
-    private PVector robotAcceleration;
-    private float robotAngularAcceleration;
+    private PVector targetVelocity;
+    private float targetAngularVelocity;
 
     private WheelTread wheelTread;
     private float mass;
@@ -22,9 +22,9 @@ public class SwerveDrive {
         robotAngle = startAngle;
         robotVelocity = new PVector(0, 0);
         robotAngularVelocity = 0;
-
-        robotAcceleration = new PVector(0, 0);
-        robotAngularAcceleration = 0;
+        
+        targetVelocity = new PVector(0, 0);
+        targetAngularVelocity = 0;
 
         this.modules = modules;
         this.mass = mass;
@@ -33,6 +33,9 @@ public class SwerveDrive {
 
     // Called every frame in main class to update the robot's states
     public void update() {
+        applyPhysics();
+        updateModuleStates();
+
         for (Module m : modules) {
             m.update(DT);
         }
@@ -41,21 +44,41 @@ public class SwerveDrive {
 
     // Called with keyboard inputs
     public void drive(float vx, float vy, float omega) {
-        for (Module m : modules) {
-            PVector inputVel = new PVector(vx, vy);
-            if (inputVel.mag() > maxTranslationalVelocity) {
-                inputVel.normalize();
-                inputVel.mult(maxTranslationalVelocity);
-            }
+        PVector inputVel = new PVector(vx, vy);
+        if (inputVel.mag() > maxTranslationalVelocity) {
+            inputVel.normalize();
+            inputVel.mult(maxTranslationalVelocity);
+        }
 
-            PVector moduleVel = calculateModuleVelocity(inputVel.x, inputVel.y, omega, m.getPosition());
+        targetVelocity.set(inputVel.x, inputVel.y);
+        targetAngularVelocity = omega;
+    }
+
+    private void applyPhysics() {
+        float tractionFactor = wheelTread.getTractionCoefficient();
+        float massFactor = 100.0 / mass;
+        float physicsFactor = tractionFactor * massFactor * DT;
+
+        // Rate limit both velocities based on physics factor
+        PVector velocityDiff = PVector.sub(targetVelocity, robotVelocity);
+        velocityDiff.mult(physicsFactor);
+        robotVelocity.add(velocityDiff);
+
+        float angularDiff = targetAngularVelocity - robotAngularVelocity;
+        robotAngularVelocity += angularDiff * physicsFactor;
+    }
+
+    // Set module targets based off robot targets
+    private void updateModuleStates() {
+        for (Module m : modules) {
+            PVector moduleVel = calculateModuleVelocity(robotVelocity.x, robotVelocity.y, targetAngularVelocity, m.getPosition());
             m.setTargetState(moduleVel);
         }
     }
 
     /* 
-     * This takes the translational velocity from the user, and it 
-     * calculates the rotational velocity by taking the change in
+     * This takes the target translational and rotational velocities from the user (ROBOT),
+     * then outputs a target velocity vector (MODULE, remember: angle = atan2(vector) and speed = mag(vector))
     */
     private PVector calculateModuleVelocity(float vx_field, float vy_field, float omega, PVector pos) {
         // Cross product of omega and R (radius, or distance from center)

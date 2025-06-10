@@ -13,12 +13,12 @@ public class ScoreBoard {
         this.timer = new Timer();
     }
 
-    public void addPoints(String team, int points) {
+    public void addPoints(String team, int points, float pointMod) {
         if (team.equals(redName)) {
-            redScore += points;
+            redScore += Math.ceil(points * pointMod);
         } 
         else if (team.equals(blueName)) {
-            blueScore += points;
+            blueScore += Math.ceil(points * pointMod);
         } 
         else {
             throw new IllegalArgumentException("Team does not exist");
