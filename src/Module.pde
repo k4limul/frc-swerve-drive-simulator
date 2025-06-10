@@ -95,15 +95,19 @@ public class Module {
   public float getAngularVelocity() { return angularVelocity; }
   
   // Visualize this module on the processing canvas
-  public void draw(PVector robotCenter, float robotAngle, float s, float t) {
+  public void draw(PVector robotCenter, float robotAngle, float s, float t, boolean isBlue) {
       pushMatrix();
-      translate(robotCenter.x, robotCenter.y); // move coordinate system to center of module
-      rotate(radians(robotAngle)); // rotate coordinate system by angle of module
-      translate(posFromCenter.x, posFromCenter.y);
+      translate(robotCenter.x, robotCenter.y); // robot-relative coordinate system
+      rotate(radians(robotAngle)); 
+      translate(posFromCenter.x, posFromCenter.y); // module-relative coordinate system
       rotate(radians(currentAngle));
 
       noFill();
-      stroke(255, 0, 0);
+      if (isBlue) {
+        stroke(0, 0, 255);
+      } else {
+          stroke(255, 0, 0);
+      }
       strokeWeight(2);
       
       // draw square representing module

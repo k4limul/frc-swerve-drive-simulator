@@ -79,7 +79,12 @@ public class Robot{
     }
 
     public void draw(){
-        swerveDrive.draw();
+        if (team.equals("Blue")) {
+            swerveDrive.draw(true);
+        } else {
+            swerveDrive.draw(false);
+        }
+        
     }
     
 }

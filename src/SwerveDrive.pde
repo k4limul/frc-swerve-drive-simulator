@@ -88,43 +88,6 @@ public class SwerveDrive {
         if (robotAngle < 0) robotAngle += 360;
     }
 
-    private PVector recalculateLinearAccel(PVector targetAccel) {
-        /* TRACTION
-         * When the wheels of the drivetrain are touching the ground, they exert a force
-         * equal to the mass of the drivetrain multiplied by the gravity constant.
-         * 
-         * However, due to friction, the actual force exerted by the wheels is less than 
-         * F = mg. Instead, it is F = mg * t, where t is the traction coefficient from 0 to 1.
-         * 
-         * Since we're calculating the max acceleration, we can divide by m on both sides,
-         * which gives us gt as the max possible acceleration.
-        */
-        float maxTraction = wheelTread.getTractionCoefficient();
-        float maxAccelMag = maxTraction * 9.81;
-
-        /* MASS (INERTIA)
-         * Newton's first law of motion explains why objects tend to stay in equilibrium
-         * unless acted upon by an unbalanced force. This is known as inertia.
-         * 
-         * By Newton's second law F = ma, objects with more mass experience less acceleration 
-         * for the same force. So, in our case a heavier robot will be harder to accelerate
-         * than a lighter robot.
-         */
-        float medianRobotMass = 100.0;
-
-        // This factor normalizes the maxAccel of a robot relative to its mass
-        float massEffect = 1.0 / (1.0 + mass / medianRobotMass);
-        maxAccelMag *= massEffect;
-
-        PVector output = targetAccel;
-        if (output.mag() > maxAccelMag) {
-            output.normalize();
-            output.mult(maxAccelMag);
-        }
-
-        return output;
-    }
-
     // GETTERS
     public PVector getRobotPosition() { return robotPosition.copy(); }
     public float getRobotAngle() { return robotAngle; }
@@ -132,7 +95,7 @@ public class SwerveDrive {
     public float getRobotAngularVelocity() { return robotAngularVelocity; }
 
     // Draw robot and modules on canvas!
-    public void draw() {
+    public void draw(boolean isBlue) {
         float s = 20;
         float t = 10;
 
@@ -140,7 +103,11 @@ public class SwerveDrive {
         translate(robotPosition.x, robotPosition.y); // move coordinate system to center of robot
         rotate(radians(robotAngle)); // rotate coordinate system by angle of robot
         noFill();
-        stroke(255, 0, 0);
+        if (isBlue) {
+            stroke(0, 0, 255);
+        } else {
+            stroke(255, 0, 0);
+        }
         strokeWeight(1);
         
         // draw square representing robot center
@@ -165,7 +132,7 @@ public class SwerveDrive {
         popMatrix();
 
         for (Module m : modules) {
-            m.draw(robotPosition, robotAngle, s, t);
+            m.draw(robotPosition, robotAngle, s, t, isBlue);
         }
     }
 }
