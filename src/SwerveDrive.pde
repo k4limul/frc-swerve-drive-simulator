@@ -1,6 +1,7 @@
 public class SwerveDrive {
     // Framerate -- constant
     private static final float DT = 1.0 / 60.0;
+    private static final float maxTranslationalVelocity = 500.0;
 
     // Swerve attributes
     private PVector robotPosition;
@@ -41,7 +42,13 @@ public class SwerveDrive {
     // Called with keyboard inputs
     public void drive(float vx, float vy, float omega) {
         for (Module m : modules) {
-            PVector moduleVel = calculateModuleVelocity(vx, vy, omega, m.getPosition());
+            PVector inputVel = new PVector(vx, vy);
+            if (inputVel.mag() > maxTranslationalVelocity) {
+                inputVel.normalize();
+                inputVel.mult(maxTranslationalVelocity);
+            }
+
+            PVector moduleVel = calculateModuleVelocity(inputVel.x, inputVel.y, omega, m.getPosition());
             m.setTargetState(moduleVel);
         }
     }
