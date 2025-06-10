@@ -41,7 +41,17 @@ public class Robot{
     }
     
     public void updateScoreBoard(int points){
-        scoreBoard.addPoints(team, points);
+        scoreBoard.addPoints(team, points, wheelTread.getPointModifier() * getMassPointModifier());
+    }
+
+    private float getMassPointModifier() {
+        if (mass < 100) {
+            return 0.9;
+        } else if (mass < 150) {
+            return 1.0;
+        } else {
+            return 1.5;
+        }
     }
 
     public PVector getPosition() {
@@ -79,7 +89,12 @@ public class Robot{
     }
 
     public void draw(){
-        swerveDrive.draw();
+        if (team.equals("Blue")) {
+            swerveDrive.draw(true);
+        } else {
+            swerveDrive.draw(false);
+        }
+        
     }
     
 }

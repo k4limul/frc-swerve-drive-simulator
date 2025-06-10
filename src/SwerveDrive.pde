@@ -1,6 +1,7 @@
 public class SwerveDrive {
     // Framerate -- constant
     private static final float DT = 1.0 / 60.0;
+    private static final float maxTranslationalVelocity = 500.0;
 
     // Swerve attributes
     private PVector robotPosition;
@@ -10,8 +11,8 @@ public class SwerveDrive {
     private Module[] modules;
 
     // States for more realistic motion
-    private PVector robotAcceleration;
-    private float robotAngularAcceleration;
+    private PVector targetVelocity;
+    private float targetAngularVelocity;
 
     private WheelTread wheelTread;
     private float mass;
@@ -21,9 +22,9 @@ public class SwerveDrive {
         robotAngle = startAngle;
         robotVelocity = new PVector(0, 0);
         robotAngularVelocity = 0;
-
-        robotAcceleration = new PVector(0, 0);
-        robotAngularAcceleration = 0;
+        
+        targetVelocity = new PVector(0, 0);
+        targetAngularVelocity = 0;
 
         this.modules = modules;
         this.mass = mass;
@@ -32,6 +33,9 @@ public class SwerveDrive {
 
     // Called every frame in main class to update the robot's states
     public void update() {
+        applyPhysics();
+        updateModuleStates();
+
         for (Module m : modules) {
             m.update(DT);
         }
@@ -40,15 +44,41 @@ public class SwerveDrive {
 
     // Called with keyboard inputs
     public void drive(float vx, float vy, float omega) {
+        PVector inputVel = new PVector(vx, vy);
+        if (inputVel.mag() > maxTranslationalVelocity) {
+            inputVel.normalize();
+            inputVel.mult(maxTranslationalVelocity);
+        }
+
+        targetVelocity.set(inputVel.x, inputVel.y);
+        targetAngularVelocity = omega;
+    }
+
+    private void applyPhysics() {
+        float tractionFactor = wheelTread.getTractionCoefficient();
+        float massFactor = 100.0 / mass;
+        float physicsFactor = tractionFactor * massFactor * DT;
+
+        // Rate limit both velocities based on physics factor
+        PVector velocityDiff = PVector.sub(targetVelocity, robotVelocity);
+        velocityDiff.mult(physicsFactor);
+        robotVelocity.add(velocityDiff);
+
+        float angularDiff = targetAngularVelocity - robotAngularVelocity;
+        robotAngularVelocity += angularDiff * physicsFactor;
+    }
+
+    // Set module targets based off robot targets
+    private void updateModuleStates() {
         for (Module m : modules) {
-            PVector moduleVel = calculateModuleVelocity(vx, vy, omega, m.getPosition());
+            PVector moduleVel = calculateModuleVelocity(robotVelocity.x, robotVelocity.y, targetAngularVelocity, m.getPosition());
             m.setTargetState(moduleVel);
         }
     }
 
     /* 
-     * This takes the translational velocity from the user, and it 
-     * calculates the rotational velocity by taking the change in
+     * This takes the target translational and rotational velocities from the user (ROBOT),
+     * then outputs a target velocity vector (MODULE, remember: angle = atan2(vector) and speed = mag(vector))
     */
     private PVector calculateModuleVelocity(float vx_field, float vy_field, float omega, PVector pos) {
         // Cross product of omega and R (radius, or distance from center)
@@ -88,43 +118,6 @@ public class SwerveDrive {
         if (robotAngle < 0) robotAngle += 360;
     }
 
-    private PVector recalculateLinearAccel(PVector targetAccel) {
-        /* TRACTION
-         * When the wheels of the drivetrain are touching the ground, they exert a force
-         * equal to the mass of the drivetrain multiplied by the gravity constant.
-         * 
-         * However, due to friction, the actual force exerted by the wheels is less than 
-         * F = mg. Instead, it is F = mg * t, where t is the traction coefficient from 0 to 1.
-         * 
-         * Since we're calculating the max acceleration, we can divide by m on both sides,
-         * which gives us gt as the max possible acceleration.
-        */
-        float maxTraction = wheelTread.getTractionCoefficient();
-        float maxAccelMag = maxTraction * 9.81;
-
-        /* MASS (INERTIA)
-         * Newton's first law of motion explains why objects tend to stay in equilibrium
-         * unless acted upon by an unbalanced force. This is known as inertia.
-         * 
-         * By Newton's second law F = ma, objects with more mass experience less acceleration 
-         * for the same force. So, in our case a heavier robot will be harder to accelerate
-         * than a lighter robot.
-         */
-        float medianRobotMass = 100.0;
-
-        // This factor normalizes the maxAccel of a robot relative to its mass
-        float massEffect = 1.0 / (1.0 + mass / medianRobotMass);
-        maxAccelMag *= massEffect;
-
-        PVector output = targetAccel;
-        if (output.mag() > maxAccelMag) {
-            output.normalize();
-            output.mult(maxAccelMag);
-        }
-
-        return output;
-    }
-
     // GETTERS
     public PVector getRobotPosition() { return robotPosition.copy(); }
     public float getRobotAngle() { return robotAngle; }
@@ -132,7 +125,7 @@ public class SwerveDrive {
     public float getRobotAngularVelocity() { return robotAngularVelocity; }
 
     // Draw robot and modules on canvas!
-    public void draw() {
+    public void draw(boolean isBlue) {
         float s = 20;
         float t = 10;
 
@@ -140,7 +133,11 @@ public class SwerveDrive {
         translate(robotPosition.x, robotPosition.y); // move coordinate system to center of robot
         rotate(radians(robotAngle)); // rotate coordinate system by angle of robot
         noFill();
-        stroke(255, 0, 0);
+        if (isBlue) {
+            stroke(0, 0, 255);
+        } else {
+            stroke(255, 0, 0);
+        }
         strokeWeight(1);
         
         // draw square representing robot center
@@ -165,7 +162,7 @@ public class SwerveDrive {
         popMatrix();
 
         for (Module m : modules) {
-            m.draw(robotPosition, robotAngle, s, t);
+            m.draw(robotPosition, robotAngle, s, t, isBlue);
         }
     }
 }

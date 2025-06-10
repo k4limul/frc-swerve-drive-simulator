@@ -1,7 +1,7 @@
 public static class WheelTread {
 
-  public static final WheelTread SPIKY = new WheelTread(0.8, 1.2);
-  public static final WheelTread SMOOTH = new WheelTread(0.6, 1.0);
+  public static final WheelTread SPIKY = new WheelTread(2.5, 0.9);
+  public static final WheelTread SMOOTH = new WheelTread(0.5, 2.0);
   
   private final float traction;
   private final float pointModifier;
