@@ -6,11 +6,18 @@ public class Robot{
     private ControlScheme controlScheme;
     private ScoreBoard scoreBoard;
     private boolean climbing;
-    private boolean gamePiece;
+    private boolean coral;
+    private boolean algae;
     private String zone;
-    private boolean amplified;
+    // private boolean amplified;
+    private int currentLevel;
+    private int leftright; // 0 = left, 1 = right
+    private boolean[] level2;
+    private boolean[] level3;
+    private boolean[] level4;
+    private int side;
 
-    public Robot(String team, int mass, WheelTread wheelTread, PVector startPos, float startAngle, ControlScheme controlScheme, ScoreBoard scoreBoard) {
+    public Robot(String team, int mass, WheelTread wheelTread, PVector startPos, float startAngle, ControlScheme controlScheme, ScoreBoard scoreBoard, int level, int leftright) {
         this.team = team;
         this.mass = mass;
         this.wheelTread = wheelTread;
@@ -18,8 +25,14 @@ public class Robot{
         this.scoreBoard = scoreBoard;
 
         climbing = false;
-        gamePiece = true; // starts with a gamepiece
-        amplified = false;
+        coral = true; // starts with a gamepiece
+        algae = false;
+        //amplified = false;
+        currentLevel = level;
+        this.leftright = leftright;
+        level2 = new boolean[12];
+        level3 = new boolean[12];
+        level4 = new boolean[12];
 
         Module[] modules = new Module[4];
         modules[0] = new Module(new PVector(15, 15), 2000, 360);   // Front Right
@@ -40,7 +53,7 @@ public class Robot{
     }
 
     public void updateShotState() {
-        if (controlScheme.isShootKeyPressed() && gamePiece && canShootIntoZone()) {
+        if (controlScheme.isShootKeyPressed() && coral && canShootIntoZone()) {
             shoot();
         }
     }
@@ -51,8 +64,12 @@ public class Robot{
         float angle = getAngle();
 
         if (team.equals("Blue")) {
-            if (zone.equals("subwoofer")) {
-                return angle >= 90 && angle <= 270;
+            if (zone.equals("reefAB")) {
+                boolean isEmpty = true;
+                if(currentLevel == 2){ isEmpty = !level2[(side - 1) * 2 + leftright]; }
+                if(currentLevel == 3){ isEmpty = !level3[(side - 1) * 2 + leftright]; }
+                if(currentLevel == 4){ isEmpty = !level4[(side - 1) * 2 + leftright]; }
+                return angle >= 90 && angle <= 270 && isEmpty;
             } else if (zone.equals("amp")) {
                 return angle >= 225 && angle <= 315; // facing north is 270 deg
             }
@@ -68,23 +85,30 @@ public class Robot{
     }
     
     private void shoot() {
-        if (!gamePiece) return;
+        if (!coral) return;
 
-        gamePiece = false;
+        coral = false;
         
-        if (zone.equals("subwoofer")) {
-            int points = 2;
-            int multiplier = amplified ? 2 : 1; // 2x if amplified
-            updateScoreBoard(points * multiplier);
-            if (amplified) amplified = false;
+        if (zone.equals("reefAB")) {
+            if(currentLevel == 2){ level2[(side - 1) * 2 + leftright] = true; }
+            if(currentLevel == 3){ level3[(side - 1) * 2 + leftright] = true; }
+            if(currentLevel == 4){ level4[(side - 1) * 2 + leftright] = true; }
+            updateScoreBoard(currentLevel + 1);
         } else if (zone.equals("amp")) {
             updateScoreBoard(1);
-            amplified = true;
+            //amplified = true;
         }
     }
 
+
     public void updateZoneState(String name){
         zone = name;
+        if(zone.equals("reefAB")) side = 1;
+        if(zone.equals("reefCD")) side = 2;
+        if(zone.equals("reefEF")) side = 3;
+        if(zone.equals("reefGH")) side = 4;
+        if(zone.equals("reefIJ")) side = 5;
+        if(zone.equals("reefKL")) side = 6;
     }
     
     public void updateScoreBoard(int points){
@@ -117,16 +141,16 @@ public class Robot{
         return controlScheme;
     }
     
-    public void acquireGamePiece(){
-        gamePiece = true;
+    public void acquireCoral(){
+        coral = true;
     }
 
     public void setClimbing(boolean climb){
         climbing = climb;
     }
 
-    public boolean hasGamePiece(){
-        return gamePiece;
+    public boolean hasCoral(){
+        return coral;
     }
 
     public void draw(){
@@ -137,7 +161,7 @@ public class Robot{
         }
         
         // Draw gamepiece (orange donut-shaped "note")
-        if (gamePiece) {
+        if (coral) {
             PVector pos = swerveDrive.getRobotPosition();
             pushMatrix();
             translate(pos.x, pos.y);

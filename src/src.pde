@@ -3,7 +3,7 @@ Field gameField;
 void setup() {
     size(800, 600);
     gameField = new Field();
-    gameField.loadFieldImage("crescendo.png");
+    gameField.loadFieldImage("reefscape.png");
 }
 
 void draw() {

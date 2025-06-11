@@ -21,13 +21,17 @@ public class Zone{
     }
 
     public void applyEffect(Robot robot){
-        if(checkRobotInside(robot)) {
+        if(checkRobotInside(robot) && team == robot.getTeam()) {
             if (name.equals("source")) {
-                if (robot.getTeam().equals(team) && !robot.hasGamePiece()) {
+                if (!robot.hasGamePiece()) {
                     robot.acquireGamePiece();
                 }
-            } else if (name.equals("stage")) {
+            } else if (name.equals("barge")) {
                 robot.setClimbing(true);
+            } else if(name.equals("reef")){
+                
+            } else { //net
+
             }
         } else {
             if (name.equals("stage")) {

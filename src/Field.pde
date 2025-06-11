@@ -5,6 +5,7 @@ public class Field {
     private PImage fieldImage;
     private boolean gameStarted;
 
+
     public Field() {
         robots = new ArrayList<Robot>();
         zones = new ArrayList<Zone>();
@@ -26,8 +27,8 @@ public class Field {
         ControlScheme p1controls = new ControlScheme('w', 's', 'a', 'd', 'e', 'q', 'f');
         ControlScheme p2controls = new ControlScheme('i', 'k', 'j', 'l', 'o', 'u', 'h');
  
-        Robot blue = new Robot("Blue", 40, WheelTread.SPIKY, new PVector(100, 400), 0, p1controls, scoreBoard);
-        Robot red = new Robot("Red", 150, WheelTread.SMOOTH, new PVector(700, 400), 180, p2controls, scoreBoard);
+        Robot blue = new Robot("Blue", 40, WheelTread.SPIKY, new PVector(100, 400), 0, p1controls, scoreBoard, 2, 1);
+        Robot red = new Robot("Red", 150, WheelTread.SMOOTH, new PVector(700, 400), 180, p2controls, scoreBoard, 2, 1);
         robots.clear();
         robots.add(red);
         robots.add(blue);
@@ -36,7 +37,9 @@ public class Field {
         zones.add(new Zone("source", new PVector(750,550), 100, 100, 0, "Blue"));
         zones.add(new Zone("stage", new PVector(230,301), 80, 80, 3, "Blue"));
         zones.add(new Zone("subwoofer", new PVector(85,195), 80, 80, 2, "Blue"));
-        zones.add(new Zone("amp", new PVector(100,40), 80, 80, 1, "Blue"));
+        //zones.add(new Zone("amp", new PVector(100,40), 80, 80, 1, "Blue"));
+        zones.add(new Zone("reefAB", new PVector(100,40), 80, 80, 1, "Blue"));
+
         
         zones.add(new Zone("source", new PVector(50,550), 100, 100, 0, "Red"));
         zones.add(new Zone("stage", new PVector(570,301), 80, 80, 3, "Red"));
