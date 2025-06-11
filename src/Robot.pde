@@ -8,6 +8,7 @@ public class Robot{
     private boolean climbing;
     private boolean gamePiece;
     private String zone;
+    private boolean amplified;
 
     public Robot(String team, int mass, WheelTread wheelTread, PVector startPos, float startAngle, ControlScheme controlScheme, ScoreBoard scoreBoard) {
         this.team = team;
@@ -16,8 +17,9 @@ public class Robot{
         this.controlScheme = controlScheme;
         this.scoreBoard = scoreBoard;
 
-        this.climbing = false;
-        this.gamePiece = true; // starts with a gamepiece
+        climbing = false;
+        gamePiece = true; // starts with a gamepiece
+        amplified = false;
 
         Module[] modules = new Module[4];
         modules[0] = new Module(new PVector(15, 15), 2000, 360);   // Front Right
@@ -34,6 +36,51 @@ public class Robot{
 
         swerveDrive.drive(translation.x, translation.y, rotation);
         swerveDrive.update();
+        updateShotState();
+    }
+
+    public void updateShotState() {
+        if (controlScheme.isShootKeyPressed() && gamePiece && canShootIntoZone()) {
+            shoot();
+        }
+    }
+    
+    private boolean canShootIntoZone() {
+        if (zone == null) return false;
+
+        float angle = getAngle();
+
+        if (team.equals("Blue")) {
+            if (zone.equals("subwoofer")) {
+                return angle >= 90 && angle <= 270;
+            } else if (zone.equals("amp")) {
+                return angle >= 225 && angle <= 315; // facing north is 270 deg
+            }
+        } else { // Red alliance
+            if (zone.equals("subwoofer")) {
+                // We can't check if an angle is between 270 and 90 going counterclockwise in one statement, so:
+                return (angle >= 270 && angle <= 360) || (angle >= 0 && angle <= 90);
+            } else if (zone.equals("amp")) {
+                return angle >= 225 && angle <= 315; // facing north is 270 deg
+            }
+        }
+        return false;
+    }
+    
+    private void shoot() {
+        if (!gamePiece) return;
+
+        gamePiece = false;
+        
+        if (zone.equals("subwoofer")) {
+            int points = 2;
+            int multiplier = amplified ? 2 : 1; // 2x if amplified
+            updateScoreBoard(points * multiplier);
+            if (amplified) amplified = false;
+        } else if (zone.equals("amp")) {
+            updateScoreBoard(1);
+            amplified = true;
+        }
     }
 
     public void updateZoneState(String name){
@@ -58,6 +105,14 @@ public class Robot{
         return swerveDrive.getRobotPosition();
     }
     
+    public float getAngle() {
+        return swerveDrive.getRobotAngle();
+    }
+
+    public String getTeam() {
+        return team;
+    }
+    
     public ControlScheme getControlScheme() {
         return controlScheme;
     }
@@ -74,20 +129,6 @@ public class Robot{
         return gamePiece;
     }
 
-    public void ampScore(){
-        if (gamePiece) {
-            gamePiece = false;
-            updateScoreBoard(1);
-        }
-    }
-
-    public void subwooferShot(){
-        if (gamePiece) {
-            gamePiece = false;
-            updateScoreBoard(2);
-        }
-    }
-
     public void draw(){
         if (team.equals("Blue")) {
             swerveDrive.draw(true);
@@ -95,6 +136,15 @@ public class Robot{
             swerveDrive.draw(false);
         }
         
+        // Draw gamepiece (orange donut-shaped "note")
+        if (gamePiece) {
+            PVector pos = swerveDrive.getRobotPosition();
+            pushMatrix();
+            translate(pos.x, pos.y);
+            stroke(255, 140, 0);
+            strokeWeight(2);
+            ellipse(0, 0, 15, 15);
+            popMatrix();
+        }
     }
-    
 }
