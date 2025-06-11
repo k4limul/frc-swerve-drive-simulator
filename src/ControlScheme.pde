@@ -1,15 +1,16 @@
 public class ControlScheme{
-    private char upKey, downKey, leftKey, rightKey, rotateCCWKey, rotateCWKey;
+    private char upKey, downKey, leftKey, rightKey, rotateCCWKey, rotateCWKey, shootKey;
     // Track boolean states of every key (256 possible char-key pairs)
     private boolean[] keys = new boolean[256];
 
-    public ControlScheme(char upKey, char downKey, char leftKey, char rightKey, char rotateCCWKey, char rotateCWKey){
+    public ControlScheme(char upKey, char downKey, char leftKey, char rightKey, char rotateCCWKey, char rotateCWKey, char shootKey){
         this.upKey = upKey;
         this.downKey = downKey;
         this.leftKey = leftKey;
         this.rightKey = rightKey;
         this.rotateCCWKey = rotateCCWKey;
         this.rotateCWKey = rotateCWKey;
+        this.shootKey = shootKey;
     }
     
     // Called in main sketch
@@ -64,5 +65,9 @@ public class ControlScheme{
         if (isKeyPressed(rotateCWKey)) omega += step;
         
         return omega;
+    }
+
+    public boolean isShootKeyPressed() {
+        return isKeyPressed(shootKey);
     }
 }

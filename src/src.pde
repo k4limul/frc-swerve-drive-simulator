@@ -3,7 +3,7 @@ Field gameField;
 void setup() {
     size(800, 600);
     gameField = new Field();
-    gameField.loadFieldImage("field.png");
+    gameField.loadFieldImage("crescendo.png");
 }
 
 void draw() {
