@@ -1,8 +1,8 @@
 # FRC-Swerve-Drive-Simulator
 ## Description:
-**Player 1 (Blue): WASD to move, E/Q to rotate, F to shoot, C to climb \n
-Player 2 (Red): IJKL to move, O/U to rotate, H to shoot, N to climb \n
-Robot needs to face zones to score, align center with stage to climb, movement will be locked after climbing**
+**Player 1 (Blue): WASD to move, E/Q to rotate, F to shoot, C to climb
+Player 2 (Red): IJKL to move, O/U to rotate, H to shoot, N to climb
+Robot needs to face zones to score, align center with stage to climb, movement will be locked after climbing, your source is on opponent's side of the field**
 
 Our project is a physics-based swerve drive simulator built in Processing that will model how different drivetrain configurations—such as gear ratios, wheel types, and robot mass—affect movement on an FRC (FIRST Robotics Competition) field. Players can control customizable robots to complete objectives in designated field zones, with performance influencing score outcomes. The goal is to showcase the mechanics and strategy behind swerve drive systems in a fun, interactive two-player game format.
 
