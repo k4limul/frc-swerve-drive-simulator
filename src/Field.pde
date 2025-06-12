@@ -113,10 +113,10 @@ public class Field {
         textAlign(CENTER);
         textSize(18);
         text("FRC Swerve Drive Simulator", width/2, height/2 - 100);
-        text("Player 1 (Blue): WASD to move, E/Q to rotate, F to shoot \n", width/2, height/2 - 50);
-        text("Player 2 (Red): IJKL to move, O/U to rotate, H to shoot \n", width/2, height/2 - 25);
-        text("Drive to your alliance's source zone to pickup gamepieces \n", width/2, height/2);
-        text("Drive back to your speaker or amp, then shoot to score! \n", width/2, height/2 + 25);
+        text("Player 1 (Blue): WASD to move, E/Q to rotate, F to score coral \n Z to switch levels, X to switch branch, C to obtain/score algae \n", width/2, height/2 - 50);
+        text("Player 2 (Red): IJKL to move, O/U to rotate, H to score coral \n M to switch levels, N to switch branch, B to obtain/score algae \n", width/2, height/2);
+        text("Drive to your alliance's source zone to pickup gamepieces \n", width/2, height/2 + 50);
+        text("Drive to your reef to score coral/obtain algae or the processor/net to score algae! \n", width/2, height/2 + 75);
         textSize(18);
         text("Press SPACE to start the match!", width/2, height/2 + 160);
     }
