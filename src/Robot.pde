@@ -9,12 +9,12 @@ public class Robot{
     private boolean coral;
     private boolean algae;
     private String zone;
-    // private boolean amplified;
     private int currentLevel;
     private int leftright; // 0 = left, 1 = right
     private boolean[] level2;
     private boolean[] level3;
     private boolean[] level4;
+    private boolean[] reefAlgae;
     private int side;
 
     public Robot(String team, int mass, WheelTread wheelTread, PVector startPos, float startAngle, ControlScheme controlScheme, ScoreBoard scoreBoard, int level, int leftright) {
@@ -27,12 +27,12 @@ public class Robot{
         climbing = false;
         coral = true; // starts with a gamepiece
         algae = false;
-        //amplified = false;
         currentLevel = level;
         this.leftright = leftright;
         level2 = new boolean[12];
         level3 = new boolean[12];
         level4 = new boolean[12];
+        reefAlgae = new boolean[6];
 
         Module[] modules = new Module[4];
         modules[0] = new Module(new PVector(15, 15), 2000, 360);   // Front Right
@@ -50,11 +50,43 @@ public class Robot{
         swerveDrive.drive(translation.x, translation.y, rotation);
         swerveDrive.update();
         updateShotState();
+        updateLevel();
+        updateLR();
+        updateAlgae();
+        controlScheme.updateKeyStates();
     }
 
     public void updateShotState() {
         if (controlScheme.isShootKeyPressed() && coral && canShootIntoZone()) {
             shoot();
+        }
+    }
+
+    public void updateLevel(){
+        if(controlScheme.isLevelShiftKeyPressed()){
+            currentLevel++;
+            if(currentLevel >= 5) { currentLevel = 2;}
+        }
+    }
+
+    public void updateAlgae(){
+        if(controlScheme.isAlgaeKeyPressed() && (zone.equals("reefAB") || zone.equals("reefCD") || zone.equals("reefEF") || zone.equals("reefGH") || zone.equals("reefIJ") || zone.equals("reefKL"))) {
+            if(!algae && !reefAlgae[side - 1]){
+                algae = true;
+                reefAlgae[side - 1] = true;
+            }
+        } else if (controlScheme.isAlgaeKeyPressed() && zone.equals("processor") && algae){
+            algae = false;
+            updateScoreBoard(2);
+        } else if (controlScheme.isAlgaeKeyPressed() && zone.equals("net") && algae){
+            algae = false;
+            updateScoreBoard(4);
+        }
+    }
+
+    public void updateLR(){
+        if(controlScheme.isLRShiftKeyPressed()){
+            leftright = (leftright + 1) % 2;
         }
     }
     
@@ -64,12 +96,43 @@ public class Robot{
         float angle = getAngle();
 
         if (team.equals("Blue")) {
+            boolean isEmpty;
             if (zone.equals("reefAB")) {
-                boolean isEmpty = true;
+                isEmpty = true;
                 if(currentLevel == 2){ isEmpty = !level2[(side - 1) * 2 + leftright]; }
                 if(currentLevel == 3){ isEmpty = !level3[(side - 1) * 2 + leftright]; }
                 if(currentLevel == 4){ isEmpty = !level4[(side - 1) * 2 + leftright]; }
-                return angle >= 90 && angle <= 270 && isEmpty;
+                return (angle >= 335 || angle <= 25) && isEmpty;
+            } else if(zone.equals("reefCD")){
+                isEmpty = true;
+                if(currentLevel == 2){ isEmpty = !level2[(side - 1) * 2 + leftright]; }
+                if(currentLevel == 3){ isEmpty = !level3[(side - 1) * 2 + leftright]; }
+                if(currentLevel == 4){ isEmpty = !level4[(side - 1) * 2 + leftright]; }
+                return angle >= 290 && angle <= 340 && isEmpty;
+            } else if(zone.equals("reefEF")){
+                isEmpty = true;
+                if(currentLevel == 2){ isEmpty = !level2[(side - 1) * 2 + leftright]; }
+                if(currentLevel == 3){ isEmpty = !level3[(side - 1) * 2 + leftright]; }
+                if(currentLevel == 4){ isEmpty = !level4[(side - 1) * 2 + leftright]; }
+                return angle >= 200 && angle <= 250 && isEmpty;
+            } else if(zone.equals("reefGH")){
+                isEmpty = true;
+                if(currentLevel == 2){ isEmpty = !level2[(side - 1) * 2 + leftright]; }
+                if(currentLevel == 3){ isEmpty = !level3[(side - 1) * 2 + leftright]; }
+                if(currentLevel == 4){ isEmpty = !level4[(side - 1) * 2 + leftright]; }
+                return angle >= 155 && angle <= 205 && isEmpty;
+            } else if(zone.equals("reefIJ")){
+                isEmpty = true;
+                if(currentLevel == 2){ isEmpty = !level2[(side - 1) * 2 + leftright]; }
+                if(currentLevel == 3){ isEmpty = !level3[(side - 1) * 2 + leftright]; }
+                if(currentLevel == 4){ isEmpty = !level4[(side - 1) * 2 + leftright]; }
+                return angle >= 110 && angle <= 160 && isEmpty;
+            } else if(zone.equals("reefKL")){
+                isEmpty = true;
+                if(currentLevel == 2){ isEmpty = !level2[(side - 1) * 2 + leftright]; }
+                if(currentLevel == 3){ isEmpty = !level3[(side - 1) * 2 + leftright]; }
+                if(currentLevel == 4){ isEmpty = !level4[(side - 1) * 2 + leftright]; }
+                return angle >= 20 && angle <= 70 && isEmpty;
             } else if (zone.equals("amp")) {
                 return angle >= 225 && angle <= 315; // facing north is 270 deg
             }
@@ -89,7 +152,7 @@ public class Robot{
 
         coral = false;
         
-        if (zone.equals("reefAB")) {
+        if (zone.equals("reefAB") || zone.equals("reefCD") || zone.equals("reefEF") || zone.equals("reefGH") || zone.equals("reefIJ") || zone.equals("reefKL")) {
             if(currentLevel == 2){ level2[(side - 1) * 2 + leftright] = true; }
             if(currentLevel == 3){ level3[(side - 1) * 2 + leftright] = true; }
             if(currentLevel == 4){ level4[(side - 1) * 2 + leftright] = true; }
@@ -125,6 +188,18 @@ public class Robot{
         }
     }
 
+    //public int getLevel(){
+    //    return currentLevel;
+    //}
+
+    //public boolean hasAlgae(){
+    //    return algae;
+    //}
+
+    //public int getleftright(){
+    //    return leftright;
+    //}
+
     public PVector getPosition() {
         return swerveDrive.getRobotPosition();
     }
@@ -153,6 +228,8 @@ public class Robot{
         return coral;
     }
 
+    
+
     public void draw(){
         if (team.equals("Blue")) {
             swerveDrive.draw(true);
@@ -165,9 +242,20 @@ public class Robot{
             PVector pos = swerveDrive.getRobotPosition();
             pushMatrix();
             translate(pos.x, pos.y);
-            stroke(255, 140, 0);
+            if(currentLevel == 2) stroke(255, 0, 0);
+            if(currentLevel == 3) stroke(0, 255, 0);
+            if(currentLevel == 4) stroke(0, 0, 255);
             strokeWeight(2);
-            ellipse(0, 0, 15, 15);
+            rect(-5, 10, 10, 15);
+            popMatrix();
+        }
+        if (algae) {
+            PVector pos = swerveDrive.getRobotPosition();
+            pushMatrix();
+            translate(pos.x, pos.y);
+            stroke(0, 255, 255);
+            strokeWeight(2);
+            ellipse(0, -8, 10, 10);
             popMatrix();
         }
     }

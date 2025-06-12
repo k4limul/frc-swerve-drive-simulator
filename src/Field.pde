@@ -24,27 +24,38 @@ public class Field {
     }
 
     private void setup(){
-        ControlScheme p1controls = new ControlScheme('w', 's', 'a', 'd', 'e', 'q', 'f');
-        ControlScheme p2controls = new ControlScheme('i', 'k', 'j', 'l', 'o', 'u', 'h');
+        ControlScheme p1controls = new ControlScheme('w', 's', 'a', 'd', 'e', 'q', 'f', 'z', 'x', 'c');
+        ControlScheme p2controls = new ControlScheme('i', 'k', 'j', 'l', 'o', 'u', 'h', 'm', 'n', 'b');
  
-        Robot blue = new Robot("Blue", 40, WheelTread.SPIKY, new PVector(100, 400), 0, p1controls, scoreBoard, 2, 1);
-        Robot red = new Robot("Red", 150, WheelTread.SMOOTH, new PVector(700, 400), 180, p2controls, scoreBoard, 2, 1);
+        Robot blue = new Robot("Blue", 40, WheelTread.SPIKY, new PVector(450, 400), 0, p1controls, scoreBoard, 2, 1);
+        Robot red = new Robot("Red", 150, WheelTread.SMOOTH, new PVector(590, 400), 180, p2controls, scoreBoard, 2, 1);
         robots.clear();
         robots.add(red);
         robots.add(blue);
 
         zones.clear();
-        zones.add(new Zone("source", new PVector(750,550), 100, 100, 0, "Blue"));
-        zones.add(new Zone("stage", new PVector(230,301), 80, 80, 3, "Blue"));
-        zones.add(new Zone("subwoofer", new PVector(85,195), 80, 80, 2, "Blue"));
-        //zones.add(new Zone("amp", new PVector(100,40), 80, 80, 1, "Blue"));
-        zones.add(new Zone("reefAB", new PVector(100,40), 80, 80, 1, "Blue"));
+        zones.add(new Zone("source", new PVector(80,500), 120, 50, 0, "Blue", 5*PI/24));
+        zones.add(new Zone("source", new PVector(80,100), 120, 50, 0, "Blue", 19*PI/24));
+        zones.add(new Zone("reefAB", new PVector(215,300), 40, 50, 1, "Blue", 0));
+        zones.add(new Zone("reefCD", new PVector(250,360), 40, 40, 1, "Blue", 7*PI/6));
+        zones.add(new Zone("reefEF", new PVector(310,360), 40, 40, 1, "Blue", 11*PI/6));
+        zones.add(new Zone("reefGH", new PVector(340,300), 40, 50, 1, "Blue", 0));
+        zones.add(new Zone("reefIJ", new PVector(310,240), 40, 40, 1, "Blue", PI/6));
+        zones.add(new Zone("reefKL", new PVector(250,240), 40, 40, 1, "Blue", 5*PI/6));
+        zones.add(new Zone("processor", new PVector(370,550), 40, 40, 1, "Blue", 0));
+        zones.add(new Zone("net", new PVector(460,180), 40, 200, 1, "Blue", 0));
 
         
-        zones.add(new Zone("source", new PVector(50,550), 100, 100, 0, "Red"));
-        zones.add(new Zone("stage", new PVector(570,301), 80, 80, 3, "Red"));
-        zones.add(new Zone("subwoofer", new PVector(715,195), 80, 80, 2, "Red"));
-        zones.add(new Zone("amp", new PVector(700,40), 80, 80, 1, "Red"));
+        zones.add(new Zone("source", new PVector(960,100), 120, 50, 0, "Red", 5*PI/24));
+        zones.add(new Zone("source", new PVector(960,500), 120, 50, 0, "Red", 19*PI/24));
+        zones.add(new Zone("reefAB", new PVector(835,300), 40, 50, 1, "Red", 0));
+        zones.add(new Zone("reefCD", new PVector(800,240), 40, 40, 1, "Red", 7*PI/6));
+        zones.add(new Zone("reefEF", new PVector(740,240), 40, 40, 1, "Red", 11*PI/6));
+        zones.add(new Zone("reefGH", new PVector(710,300), 40, 50, 1, "Red", 0));
+        zones.add(new Zone("reefIJ", new PVector(740,360), 40, 40, 1, "Red", PI/6));
+        zones.add(new Zone("reefKL", new PVector(800,360), 40, 40, 1, "Red", 5*PI/6));
+        zones.add(new Zone("processor", new PVector(680,60), 40, 40, 1, "Red", 0));
+        zones.add(new Zone("net", new PVector(590,180), 40, 200, 1, "Red", 0));
     }
 
     public void update() {

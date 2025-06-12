@@ -1,9 +1,10 @@
 public class ControlScheme{
-    private char upKey, downKey, leftKey, rightKey, rotateCCWKey, rotateCWKey, shootKey;
+    private char upKey, downKey, leftKey, rightKey, rotateCCWKey, rotateCWKey, shootKey, levelShiftKey, LRShiftKey, algaeKey;
     // Track boolean states of every key (256 possible char-key pairs)
     private boolean[] keys = new boolean[256];
+    private boolean[] prevKeys = new boolean[256];
 
-    public ControlScheme(char upKey, char downKey, char leftKey, char rightKey, char rotateCCWKey, char rotateCWKey, char shootKey){
+    public ControlScheme(char upKey, char downKey, char leftKey, char rightKey, char rotateCCWKey, char rotateCWKey, char shootKey, char levelShiftKey, char LRShiftKey, char algaeKey){
         this.upKey = upKey;
         this.downKey = downKey;
         this.leftKey = leftKey;
@@ -11,6 +12,9 @@ public class ControlScheme{
         this.rotateCCWKey = rotateCCWKey;
         this.rotateCWKey = rotateCWKey;
         this.shootKey = shootKey;
+        this.levelShiftKey = levelShiftKey;
+        this.LRShiftKey = LRShiftKey;
+        this.algaeKey = algaeKey;
     }
     
     // Called in main sketch
@@ -47,6 +51,20 @@ public class ControlScheme{
         return false;
     }
 
+    private boolean isKeyJustPressed(int keyToCheck) {
+        if (keyToCheck >= 0 && keyToCheck < keys.length) {
+            return keys[keyToCheck] && !prevKeys[keyToCheck];
+        }
+        return false;
+    }
+
+    public void updateKeyStates() {
+        for (int i = 0; i < keys.length; i++) {
+            prevKeys[i] = keys[i];
+        }
+    }
+
+
     public PVector getTranslationInput(int step) {
         float vx = 0, vy = 0;
         
@@ -69,5 +87,21 @@ public class ControlScheme{
 
     public boolean isShootKeyPressed() {
         return isKeyPressed(shootKey);
+    }
+
+    //public boolean isLevelShiftKeyPressed(){
+        //return isKeyPressed(levelShiftKey);
+    //}
+
+    public boolean isLevelShiftKeyPressed(){
+    return isKeyJustPressed(levelShiftKey);
+}
+
+    public boolean isLRShiftKeyPressed(){
+        return isKeyPressed(LRShiftKey);
+    }
+
+    public boolean isAlgaeKeyPressed(){
+        return isKeyPressed(algaeKey);
     }
 }

@@ -9,7 +9,7 @@ public class Timer {
 
     public Timer() {
         auto = 10;  
-        teleop = 30;  
+        teleop = 135;  
         isAutoFinished = false;
         isTeleopFinished = false;
         isMatchStarted = false;

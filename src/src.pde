@@ -1,7 +1,7 @@
 Field gameField;
 
 void setup() {
-    size(800, 600);
+    size(1050, 600);
     gameField = new Field();
     gameField.loadFieldImage("reefscape.png");
 }
