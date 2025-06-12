@@ -108,9 +108,14 @@ public class SwerveDrive {
         // Average the module velocities
         robotVelocity = PVector.div(totalVel, 4);
         robotAngularVelocity = degrees(totalOmega / 4);
-
-        // Update robot position and angle
-        robotPosition.add(PVector.mult(robotVelocity, DT));
+        
+        PVector newPos = PVector.add(robotPosition, PVector.mult(robotVelocity, DT));
+        
+        float robotRadius = 20;
+        newPos.x = constrain(newPos.x, robotRadius, width - robotRadius);
+        newPos.y = constrain(newPos.y, robotRadius, height - robotRadius);
+    
+        robotPosition = newPos;
         robotAngle += robotAngularVelocity * DT;
         
         // Normalize robot angle within bounds
