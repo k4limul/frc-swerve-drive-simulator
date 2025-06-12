@@ -8,8 +8,8 @@ public class Timer {
     private boolean isMatchStarted;
 
     public Timer() {
-        auto = 10;  
-        teleop = 30;  
+        auto = 0;  //auto is not impletemented due to time constrain, it is not removed but instead set to 0(usual time is 30s)
+        teleop = 135;  //change time to test, the usual time is 2 minute 15 seconds(135 secs)
         isAutoFinished = false;
         isTeleopFinished = false;
         isMatchStarted = false;
