@@ -1,5 +1,8 @@
 # FRC-Swerve-Drive-Simulator
 ## Description:
+**Player 1 (Blue): WASD to move, E/Q to rotate, F to shoot, C to climb
+Player 2 (Red): IJKL to move, O/U to rotate, H to shoot, N to climb
+Robot needs to face zones to score, align center with stage to climb, movement will be locked after climbing**
 
 Our project is a physics-based swerve drive simulator built in Processing that will model how different drivetrain configurations—such as gear ratios, wheel types, and robot mass—affect movement on an FRC (FIRST Robotics Competition) field. Players can control customizable robots to complete objectives in designated field zones, with performance influencing score outcomes. The goal is to showcase the mechanics and strategy behind swerve drive systems in a fun, interactive two-player game format.
 
@@ -7,9 +10,9 @@ We will recreate the 2024 FRC game, CRESCENDO, and simulate our drivetrain on th
 
 Moreover, the game will be playable multiplayer (two-player) using a keyboard. To demonstrate both the physics and game mechanics aspects of this project, players will be able to choose and simulate the effects of different wheel treads and masses on their drivetrain. In this way, we can better understand the effects of these attributes on the robot’s efficiency and performance on the field. Because some robot archetypes are mechanically worse than others, we added a point modifying system to balance the game.
 
-Ultimately, we hope to provide a better understanding of robot design relative to game strategy by simulating the physics of a swerve drive and its gameplay in the 2024 FRC game.
+Ultimately, we hope to provide a better understanding of robot design relative to game strategy by simulating the physics of a swerve drive and its gameplay in the 2024 FRC game CRESCENDO.
 
 ## Contributors:
 - Kalimul: Implemented Module and SwerveDrive kinematics. Integrated the swerve simulation with the field and game mechanics.
 - Naveed: Implemented Zone and Field. Programmed the core functions for playing the game.
-- Alvin: Implemented ControlScheme, Timer, and ScoreBoard. Helped test and point out bugs in game logic.
+- Alvin: Implemented ControlScheme, Timer, and ScoreBoard. Added Climb, Collision, play-tested, and found bugs. 
