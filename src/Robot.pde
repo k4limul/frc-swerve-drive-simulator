@@ -6,6 +6,7 @@ public class Robot{
     private ControlScheme controlScheme;
     private ScoreBoard scoreBoard;
     private boolean climbing;
+    private boolean climbed;
     private boolean gamePiece;
     private String zone;
     private boolean amplified;
@@ -18,6 +19,7 @@ public class Robot{
         this.scoreBoard = scoreBoard;
 
         climbing = false;
+        climbed = false;
         gamePiece = true; // starts with a gamepiece
         amplified = false;
 
@@ -31,17 +33,29 @@ public class Robot{
     }
 
     public void updateSwerveState() {
-        PVector translation = controlScheme.getTranslationInput(300);
-        float rotation = controlScheme.getRotationInput(180);
-
-        swerveDrive.drive(translation.x, translation.y, rotation);
+        if (climbed) {
+            swerveDrive.drive(0, 0, 0);
+        } else {
+            PVector translation = controlScheme.getTranslationInput(300);
+            float rotation = controlScheme.getRotationInput(180);
+            
+            swerveDrive.drive(translation.x, translation.y, rotation);
+        }
         swerveDrive.update();
         updateShotState();
+        updateClimbState();
     }
 
     public void updateShotState() {
         if (controlScheme.isShootKeyPressed() && gamePiece && canShootIntoZone()) {
             shoot();
+        }
+    }
+
+    public void updateClimbState() {
+        if (controlScheme.isClimbKeyPressed() && zone != null && zone.equals("stage") && climbed == false) {
+            climb();
+            climbed = true;
         }
     }
     
@@ -80,6 +94,13 @@ public class Robot{
         } else if (zone.equals("amp")) {
             updateScoreBoard(1);
             amplified = true;
+        }
+    }
+
+    private void climb() {
+        if (!climbing) {
+            climbing = true;
+            updateScoreBoard(6);
         }
     }
 
