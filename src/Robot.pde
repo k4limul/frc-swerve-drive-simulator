@@ -54,8 +54,9 @@ public class Robot{
 
     public void updateClimbState() {
         if (controlScheme.isClimbKeyPressed() && zone != null && zone.equals("stage") && climbed == false) {
-            climb();
-            climbed = true;
+            if ((team.equals("Blue") && getPosition().x < width/2) || (team.equals("Red") && getPosition().x > width/2)) {
+                climb();
+            }
         }
     }
     
@@ -100,6 +101,7 @@ public class Robot{
     private void climb() {
         if (!climbing) {
             climbing = true;
+            climbed = true;
             updateScoreBoard(6);
         }
     }
